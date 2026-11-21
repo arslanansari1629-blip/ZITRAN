@@ -57,6 +57,31 @@ data/dataset.jsonl    generated labelled dataset
 examples/demo.py      usage demo
 ```
 
+## ZITRAN v2 — real-data upgrade (`artifacts_v2/`, `zitran/train_v2.py`)
+
+Trained on **real public data from 5 sources** (provenance: `data/SOURCES.md`):
+NSL-KDD intrusion flows, CTU-13 botnet traffic, Enron spam/ham emails, JPCERT/CC
+phishing URLs (~290k), and a ~650k malicious/benign URL corpus — with synthetic
+data only topping up classes that have no public corpus (ransomware, exfiltration).
+Unified corpus: 21,673 samples (`data/dataset_v2.jsonl`, each row tagged by source).
+
+**Upgrades:** 1,088,508 params (d=144, 3 layers, ff=288), BPE vocab 4,000, seq 56,
+label smoothing, class-weighted loss, LR warmup+cosine, EMA weights, early stopping.
+
+**Results (honest, no cherry-picking):**
+- Mixed real-data validation: **96.5%** accuracy (per-class F1 0.90–1.00)
+- **Official NSL-KDD KDDTest+ — attack types never seen in training: 71.6% exact-class,
+  84.9% threat-vs-benign** (DoS F1 0.88, recon F1 0.77; novel credential attacks are the weak spot)
+- Trade-off: v2 is specialised for structured telemetry (flows/URLs/emails — real SOC data).
+  For free-text incident descriptions, v1 (`artifacts/`) generalises better. Use v2 for
+  telemetry triage, v1 for analyst-style text, or ensemble both.
+
+```bash
+python3 -m zitran.fetch_data   # download the 5 public datasets (~90 MB, git-ignored)
+python3 -m zitran.train_v2     # retrain v2 from scratch
+python3 -m zitran.predict artifacts_v2 "url https://secure-login-verify.top/account/update"
+```
+
 ## Roadmap ideas
 - Train on real public corpora (e.g. CIC-IDS2017-style flows, phishing-email corpora) by swapping `data.py`
 - Add log-sequence mode, larger vocab/d-model, quantization for edge deployment, ONNX export

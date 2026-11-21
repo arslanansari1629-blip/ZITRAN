@@ -21,7 +21,10 @@ _ACTION = {"benign": "Allow; log normally.", "malware": "Isolate endpoint, quara
 class ZitranDetector:
     def __init__(self, artifacts="artifacts"):
         self.tok = BPETokenizer.load(f"{artifacts}/tokenizer.json")
-        self.model = ZITRAN.load(f"{artifacts}/zitran_model.npz")
+        path = f"{artifacts}/zitran_model.npz"
+        if not os.path.exists(path):
+            path = f"{artifacts}/zitran_v2_model.npz"
+        self.model = ZITRAN.load(path)
     def predict(self, text):
         x = np.array([self.tok.encode(text)])
         logits, bl = self.model.forward(x)

@@ -146,12 +146,16 @@ class ZITRAN:
         bin_logits=cls@self.Wb+self.bb
         self.cls=cls
         return logits, bin_logits
-    def loss_and_grads(self, x, y, ybin, lam=0.5):
+    def loss_and_grads(self, x, y, ybin, lam=0.5, smooth=0.05, class_w=None):
         logits, bl = self.forward(x); B=x.shape[0]
         probs=softmax(logits); bprobs=softmax(bl)
         eps=1e-12
         loss = -np.log(probs[np.arange(B),y]+eps).mean() + lam*-np.log(bprobs[np.arange(B),ybin]+eps).mean()
-        dlogits=probs.copy(); dlogits[np.arange(B),y]-=1; dlogits/=B
+        w = class_w[y].astype(np.float64) if class_w is not None else np.ones(B)
+        w = w / w.mean()
+        dlogits=probs.copy()
+        target=np.full_like(probs, smooth/probs.shape[1]); target[np.arange(B),y]+=1-smooth
+        dlogits=(dlogits-target)*(w/B)[:,None]
         dbl=bprobs.copy(); dbl[np.arange(B),ybin]-=1; dbl*= lam/B
         grads={}
         grads['Wc']=self.cls.T@dlogits; grads['bc']=dlogits.sum(0)
@@ -179,6 +183,16 @@ class ZITRAN:
             self.adam_v[name]=b2*self.adam_v[name]+(1-b2)*g*g
             mh=self.adam_m[name]/(1-b1**self.step); vh=self.adam_v[name]/(1-b2**self.step)
             self.set_param(name, param - lr*mh/(np.sqrt(vh)+ep))
+    def init_ema(self):
+        self.ema={k:v.copy() for k,v in self.named_params().items()}
+    def update_ema(self, decay=0.999):
+        if not hasattr(self,'ema'): self.init_ema()
+        for k,v in self.named_params().items(): self.ema[k]=decay*self.ema[k]+(1-decay)*v
+    def apply_ema(self):
+        self._backup={k:v.copy() for k,v in self.named_params().items()}
+        for k,v in self.ema.items(): self.set_param(k, v.copy())
+    def restore_ema(self):
+        for k,v in self._backup.items(): self.set_param(k, v)
     def predict(self,x):
         logits,bl=self.forward(x); return logits.argmax(1), bl.argmax(1), softmax(logits)
     def save(self,path):
