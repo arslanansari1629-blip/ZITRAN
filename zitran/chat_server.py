@@ -87,6 +87,11 @@ class Handler(BaseHTTPRequestHandler):
         if self.path in ("/", "/index.html"):
             p = os.path.join(ROOT, "web", "index.html")
             self._send(200, open(p, "rb").read(), "text/html; charset=utf-8")
+        elif self.path.startswith("/generated/"):
+            name = os.path.basename(self.path)
+            p = os.path.join(ROOT, "web", "generated", name)
+            if os.path.exists(p): self._send(200, open(p, "rb").read(), "text/html; charset=utf-8")
+            else: self._send(404, {"error": "generated page not found"})
         elif self.path == "/api/health":
             self._send(200, {"status": "ok", "models": [m["id"] for m in available_models()]})
         elif self.path == "/api/models":

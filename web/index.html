@@ -85,6 +85,13 @@ async function sendMsg() {
     if (d.error) { bubble('bot', '⚠️ ' + esc(d.error)); return; }
     if (!d.predicted_class) {
       const el = bubble('bot', ''); el.innerText = d.reply || '';
+      if (d.generated_url) { const a = document.createElement('a'); a.href = d.generated_url; a.target = '_blank';
+        a.textContent = '🌐 Open your generated page: ' + d.generated_url;
+        a.style.cssText = 'display:block;margin-top:8px;color:#38bdf8;font-weight:700'; el.appendChild(a); }
+      if (d.html_preview) { const det = document.createElement('details'); const sum = document.createElement('summary');
+        sum.textContent = 'View generated HTML code'; sum.style.cursor = 'pointer';
+        const pre = document.createElement('pre'); pre.style.cssText = 'overflow:auto;font-size:11px;max-height:220px';
+        pre.textContent = d.html_preview + '\n<!-- …preview truncated, open the page or file for full code -->'; det.appendChild(sum); det.appendChild(pre); el.appendChild(det); }
       if (d.emotion) { const m = document.createElement('div'); m.className = 'meta';
         m.textContent = `${d.emotion.emoji} I sense: ${d.emotion.emotion} (${(d.emotion.confidence*100).toFixed(0)}%)` + (d.session_mood ? ` · session mood: ${d.session_mood}` : '');
         el.appendChild(m); }

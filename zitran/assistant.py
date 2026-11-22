@@ -99,6 +99,43 @@ class Assistant:
             reply = f"Goodbye{', ' + s['name'] if s['name'] else ''}! Session memory stays here if you come back. Stay secure. 👋"
         elif "what is my name" in low or "my name?" in low:
             reply = f"Your name is {s['name']}." if s["name"] else "You haven't told me yet — say 'my name is …'."
+        elif re.search(r"(build|create|make|generate|design|develop)\b.*\b(html|web\s?page|website|web site|landing page|login page|webpage|page|site)\b", low) or "html page" in low:
+            try:
+                from zitran.codegen import build_html
+                g = build_html(msg)
+                reply = (f"✅ Done! I built your **{g['kind']}** page **“{g['title']}”** ({g['theme']} theme) — valid single-file HTML with navbar, hero, features, about, contact form, footer and smooth-scroll JS.\n"
+                         f"👉 Open/preview it here: {g['url']}\n"
+                         f"The full code was saved as web/generated/{g['file']}. Want changes? Say e.g. 'rebuild it green with a login form' or 'make it a shop page'.")
+                extra = {"generated_file": g["file"], "generated_url": g["url"], "page_title": g["title"],
+                         "html_preview": g["html"][:1200]}
+            except Exception as e:
+                reply = f"I tried to build that page but hit an error: {e}"
+        elif re.match(r"\s*(who is|who was|who's|what is the capital|capital of|tell me about|what is|what's)\b", low) and not re.search(r"[0-9]", low):
+            try:
+                from zitran.general_kb import answer_general
+                ans = answer_general(msg)
+            except Exception:
+                ans = None
+            if ans:
+                reply = ans + "\n\n(Ask me anything else — or paste a security event for a full analysis.)"
+            elif re.search(r"who is|who was", low):
+                reply = ("I don't have reliable facts about that person in my built-in knowledge, and I won't make things up. "
+                         "I know major figures like Cristiano Ronaldo, Messi, Einstein, Gandhi, Elon Musk — and I'm strongest on cybersecurity. "
+                         "Try asking me about them, a country's capital, or any security topic!")
+            else:
+                hit = next((v for k, v in KNOWLEDGE.items() if k in low), None)
+                if hit:
+                    reply = hit
+                else:
+                    pred = self.predict(msg, model_id) if self.predict else None
+                    if pred:
+                        rs = reason(msg, pred); pred = {**pred, "reasoning": rs}
+                        s["last"], s["last_text"] = pred, msg
+                        reply = (f"**Analysis: {pred['predicted_class']}** — risk **{pred['risk_level']}**, confidence {pred['confidence']:.0%}. "
+                                 f"{pred['recommended_action']} Ask me **'why?'** for the evidence trail.")
+                        extra = {**extra, "prediction": pred, **pred, "reasoning": rs}
+                    else:
+                        reply = "I'm not sure about that one — try a security question, a factual question I cover, or ask me to build a web page!"
         elif any(k in low for k in ["how to test", "how can i test", "test you", "how do i use", "help", "what can you do", "capabilit"]):
             reply = ("Here's how to test me:\n"
                      "1) Paste an attack description (e.g. 'files encrypted, ransom note demands bitcoin') — I classify + explain my reasoning.\n"
@@ -164,7 +201,7 @@ class Assistant:
             reply = f"That evaluates to **{val}**."
         else:
             concept_hit = next((v for k, v in KNOWLEDGE.items() if k in low and ("what" in low or "explain" in low or "tell" in low or "?" in msg or len(low) < 60)), None)
-            if concept_hit and not any(w in low for w in ["detected", "attack on", "happened", "my ", "our ", "server", "host"]):
+            if concept_hit and not any(w in low for w in ["detected", "attack on", "happened", "my ", "our ", "server", "host", "encrypted", "ransom", "demand", "infected", "breached", "locked", "stolen", "suspicious", "alert", "failed login"]):
                 reply = concept_hit + "\n\nWant me to analyse a real example? Paste one and I'll classify it with reasoning."
             else:
                 # default: treat as a security event to analyse

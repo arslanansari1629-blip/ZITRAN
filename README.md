@@ -23,6 +23,34 @@ no pretrained weights, no fine-tuning, no ML frameworks. Only NumPy + Python std
 Each prediction also returns: confidence, threat probability, risk level
 (`NONE/MEDIUM/HIGH/CRITICAL`), top-3 classes, and a recommended defensive action.
 
+## ✍️ ZITRAN-Gen — generative model (`artifacts_gen2/`) + emotion brain (`artifacts_emotion/`)
+
+**Generative brain:** decoder-only Transformer (19,312,128 params, d=384, 10 layers,
+causal LM with temperature/top-k sampling — `zitran/gen_model.py`, `zitran/generate.py`,
+live at `POST /api/generate`). Corpus = **2.48M tokens / 26k documents from everywhere
+reachable**: all cybersecurity sources (attack scenarios, detection/solutions, NSL-KDD,
+CTU-13, UNSW, Enron, JPCERT, URLs) + general instruction data. Requested
+`load_dataset("teknium/OpenHermes-2.5")` is attempted first in `zitran/instruction_data.py`
+but huggingface.co is unreachable from this sandbox, so training used the same library
+with the GitHub-hosted **Stanford Alpaca (52k)** fallback — swap in OpenHermes on an
+unrestricted machine with zero code changes.
+
+**Training result:** 320 steps × 24 × 80 tokens (614k tokens), test perplexity
+**4000 (random) → 103.8**. Verbatim samples are stored in `artifacts_gen2/metrics.json` —
+read them before believing any hype: it produces topical, format-aware but often
+incoherent text. **It is not Claude and not a "god model"** — frontier LLMs train on
+trillions of tokens across thousands of GPUs; this ran ~25 minutes on 2 CPU cores.
+What it *is*: a real, from-scratch generative foundation that improves predictably
+with more steps (`python3 -m zitran.train_gen2 --max-steps 5000`) and the right
+architecture to scale. For production answers, the classifier ensemble (94-98%)
++ reasoning assistant remain the reliable brain; Gen is the creative draft engine.
+
+**Emotion brain:** GoEmotions-trained classifier (Ekman 7-class) — **57.5% accuracy /
+0.48 macro-F1 on the official held-out test** (`artifacts_emotion/metrics.json`).
+The assistant reads the emotion of every message, tracks session mood, and adapts
+(empathetic openers under stress, celebration on joy); Cornell-dialogue retrieval
+(`zitran/dialogue.py`, 40k pairs in `data/dialogue_pairs.jsonl`) powers casual chat.
+
 ## 🧠 Conversational assistant upgrade — talk, reasoning & logic
 
 ZITRAN now **talks like an assistant**, not just a classifier (`zitran/assistant.py` +
@@ -173,3 +201,17 @@ python3 -m zitran.ensemble "ransom note pay bitcoin files encrypted locked"
 ## Roadmap ideas
 - Train on real public corpora (e.g. CIC-IDS2017-style flows, phishing-email corpora) by swapping `data.py`
 - Add log-sequence mode, larger vocab/d-model, quantization for edge deployment, ONNX export
+
+## 🌍 General knowledge + 🛠️ HTML page builder (assistant skills)
+
+The chat assistant now also:
+- **Answers general questions** (`zitran/general_kb.py`): curated facts (Ronaldo,
+  Messi, Einstein, Gandhi, Elon Musk…), ~90 country capitals, plus retrieval over the
+  Alpaca instruction data. Unknown people get an honest "I don't know" — no hallucination.
+- **Builds web pages on demand** (`zitran/codegen.py`): say *"build a dark green
+  restaurant page called SpiceHouse"* and it writes a complete single-file HTML page
+  (themes, login/portfolio/dashboard/shop/restaurant/landing kinds, inline CSS/JS) to
+  `web/generated/`, served live at `/generated/<name>.html` with a clickable link in chat.
+  Example output committed at `web/generated/spicehouse.html`.
+- Security analysis, emotion reading, dialogue, math/logic and `POST /api/generate`
+  (ZITRAN-Gen) all remain available in the same chat. Tests: `tests/test_skills.py`.
