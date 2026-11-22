@@ -38,6 +38,25 @@ class Assistant:
         """predict_fn(text) -> classifier dict (chat_server supplies model-aware fn)."""
         self.predict = predict_fn
         self.sessions = {}
+        self._emotion_det = None; self._dialogue = None
+
+    def detect_emotion(self, text):
+        try:
+            if self._emotion_det is None:
+                from zitran.predict_emotion import EmotionDetector
+                self._emotion_det = EmotionDetector()
+            return self._emotion_det.predict(text)
+        except Exception:
+            return None
+
+    def casual_dialogue(self, text, emotion):
+        try:
+            if self._dialogue is None:
+                from zitran.dialogue import RetrievalDialogue
+                self._dialogue = RetrievalDialogue()
+            return self._dialogue.respond(text, emotion)
+        except Exception:
+            return None
 
     def _session(self, sid):
         return self.sessions.setdefault(sid, {"history": [], "name": None, "last": None, "last_text": None, "count": 0})
@@ -50,10 +69,20 @@ class Assistant:
                 m = json.load(open(p)); out[name] = m
         return out
 
+    CASUAL = ["how are you", "what's up", "whats up", "i feel", "i am feeling", "i'm feeling", "im feeling",
+              "i am sad", "i'm sad", "i am happy", "i am angry", "i am scared", "i am bored", "talk to me",
+              "be my friend", "tell me something", "good morning", "good evening", "good night", "how was your day",
+              "i need someone to talk", "feeling lonely", "i am stressed", "i'm stressed", "cheer me up"]
+
     def handle(self, sid, message, model_id="ensemble"):
         s = self._session(sid); msg = (message or "").strip(); low = msg.lower()
         s["count"] += 1
         reply, extra = None, {}
+        emo = self.detect_emotion(msg) if len(msg) > 3 else None
+        if emo:
+            s.setdefault("emotions", []).append(emo["emotion"])
+            extra["emotion"] = emo
+            extra["session_mood"] = max(set(s["emotions"]), key=s["emotions"].count) if s["emotions"] else None
 
         m = re.search(r"my name is ([a-zA-Z]{2,20})", low)
         if m:
@@ -79,6 +108,24 @@ class Assistant:
                      "5) Compare: 'which model is best?'.\n"
                      "6) Automated: run `python3 tests/test_assistant.py` or `python3 -m zitran.test_responses`.\n"
                      "7) Try to trick me: paraphrase an attack in your own words, or paste something benign and check I say so.")
+        elif any(k in low for k in self.CASUAL) or re.search(r"\bi (feel|am) (sad|happy|angry|scared|afraid|stressed|lonely|bored|excited|worried|anxious)\b", low):
+            e = (emo or {}).get("emotion", "neutral"); name = f", {s['name']}" if s.get("name") else ""
+            openers = {
+                "sadness": f"I'm really sorry you're feeling this way{name}. 💙 You don't have to carry it alone — I'm here, and we can take things one small step at a time.",
+                "fear": f"It's completely understandable to feel scared{name}. Take a slow breath with me — in… and out. Whatever it is, we'll work through it together, step by step.",
+                "anger": f"I hear you{name} — that sounds genuinely frustrating. 😤 Your feelings make sense. Let's untangle what's bothering you, one piece at a time.",
+                "joy": f"That's wonderful{name}! 🎉 I love hearing that. Tell me more — what made it so good?",
+                "surprise": f"Oh wow{name}! 😲 That sounds like a lot to take in. How are you processing it?",
+                "disgust": f"Ugh, that sounds awful{name}. I'm sorry you had to deal with that.",
+                "neutral": f"I'm doing well, thanks for asking{name}! 😊 Always happy to chat — or to help with anything security-related.",
+            }
+            reply = openers.get(e, openers["neutral"]) + "\n"
+            dlg = self.casual_dialogue(msg, emo)
+            if dlg and e == "neutral":
+                reply += f'A thought on that: "{dlg["response"]}"\n'
+            reply += "How can I support you right now — just listen, cheer you up, distract you with something interesting, or help with a problem?"
+            if "how are you" in low:
+                reply = f"I'm functioning at full capacity and in a great mood — all my models are loaded and agreeing with each other! {emo['emoji'] if emo else '😊'} How are YOU feeling today, {s['name'] or 'friend'}? (I genuinely use your answer — my emotion model reads every message.)"
         elif any(k in low for k in OFFENSIVE):
             reply = ("I can't help create or carry out attacks — I'm a defensive model. "
                      "But I can help you defend against exactly that: ask me how it's detected, what it looks like in logs, "

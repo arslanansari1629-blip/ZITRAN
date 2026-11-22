@@ -85,12 +85,16 @@ async function sendMsg() {
     if (d.error) { bubble('bot', '⚠️ ' + esc(d.error)); return; }
     if (!d.predicted_class) {
       const el = bubble('bot', ''); el.innerText = d.reply || '';
+      if (d.emotion) { const m = document.createElement('div'); m.className = 'meta';
+        m.textContent = `${d.emotion.emoji} I sense: ${d.emotion.emotion} (${(d.emotion.confidence*100).toFixed(0)}%)` + (d.session_mood ? ` · session mood: ${d.session_mood}` : '');
+        el.appendChild(m); }
       if (d.reasoning && d.reasoning.steps) showReasoning(d.reasoning);
       return;
     }
     checked++; if (d.is_threat) threats++;
     document.getElementById('stats').textContent = `checked: ${checked} · threats: ${threats}`;
     let html = `<span class="badge ${d.risk_level}">${d.risk_level} RISK</span> <b>${esc(d.predicted_class)}</b>` +
+      (d.emotion ? `<span class="meta"> ${d.emotion.emoji} your message reads as: ${esc(d.emotion.emotion)}</span>` : '') +
       `<div class="bar"><div style="width:${(d.confidence*100).toFixed(1)}%"></div></div>` +
       `confidence ${(d.confidence*100).toFixed(1)}% · threat probability ${((d.threat_probability ?? (d.is_threat?1:0))*100).toFixed(1)}%<br>` +
       `${d.is_threat ? '🚨 <b>Threat detected.</b> ' : '✅ Looks benign. '}${esc(d.recommended_action)}` +

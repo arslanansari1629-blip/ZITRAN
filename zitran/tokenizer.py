@@ -6,7 +6,7 @@ class BPETokenizer:
     def __init__(self, vocab_size=2500, max_len=40):
         self.vocab_size, self.max_len = vocab_size, max_len
         self.token_to_id, self.id_to_token, self.merges = {}, {}, []
-        self._cache = {}
+        self._cache = {}; self._ranks = None
         self.specials = ["<PAD>", "<UNK>", "<CLS>", "<SEP>"]
 
     def _words(self, text):
@@ -55,12 +55,23 @@ class BPETokenizer:
     def _encode_word(self, word):
         if word in self._cache:
             return self._cache[word]
+        if not hasattr(self, "_ranks") or self._ranks is None:
+            self._ranks = {tuple(m): i for i, m in enumerate(self.merges)}
         symbols = list(word) + ["</w>"]
-        for a, b in self.merges:
+        # rank-order BPE: repeatedly merge the lowest-rank adjacent pair
+        # (equivalent to applying merges sequentially, much faster)
+        while len(symbols) > 1:
+            best_i, best_rank = -1, None
+            for i in range(len(symbols) - 1):
+                r = self._ranks.get((symbols[i], symbols[i+1]))
+                if r is not None and (best_rank is None or r < best_rank):
+                    best_rank, best_i = r, i
+            if best_i < 0: break
+            pair = (symbols[best_i], symbols[best_i+1]); merged = pair[0] + pair[1]
             out, i = [], 0
             while i < len(symbols):
-                if i < len(symbols) - 1 and symbols[i] == a and symbols[i+1] == b:
-                    out.append(a + b); i += 2
+                if i < len(symbols) - 1 and (symbols[i], symbols[i+1]) == pair:
+                    out.append(merged); i += 2
                 else:
                     out.append(symbols[i]); i += 1
             symbols = out

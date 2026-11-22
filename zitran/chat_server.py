@@ -93,7 +93,21 @@ class Handler(BaseHTTPRequestHandler):
             self._send(200, {"models": available_models()})
         else:
             self._send(404, {"error": "not found"})
+    _gen = None
     def do_POST(self):
+        if self.path == "/api/generate":
+            try:
+                n = int(self.headers.get("Content-Length", 0))
+                body = json.loads(self.rfile.read(n) or b"{}")
+                if Handler._gen is None:
+                    from zitran.generate import load_gen, generate_text
+                    Handler._gen = (load_gen(), generate_text)
+                (tok, model), gen_fn = Handler._gen
+                text = gen_fn(tok, model, body.get("prompt", ""), int(body.get("max_new", 60)),
+                              float(body.get("temperature", 0.8)), seed=body.get("seed"))
+                return self._send(200, {"prompt": body.get("prompt", ""), "generated": text, "model": "ZITRAN-Gen (decoder-only LM)"})
+            except Exception as e:
+                return self._send(501, {"error": f"generative model unavailable: {e}"})
         if self.path != "/api/chat":
             return self._send(404, {"error": "not found"})
         try:

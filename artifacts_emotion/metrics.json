@@ -1,0 +1,145 @@
+{
+  "accuracy": 0.5745,
+  "macro_f1": 0.4819,
+  "per_class": {
+    "anger": {
+      "precision": 0.384,
+      "recall": 0.4835,
+      "f1": 0.428,
+      "support": 726
+    },
+    "disgust": {
+      "precision": 0.5,
+      "recall": 0.2188,
+      "f1": 0.3043,
+      "support": 96
+    },
+    "fear": {
+      "precision": 0.5,
+      "recall": 0.4,
+      "f1": 0.4444,
+      "support": 95
+    },
+    "joy": {
+      "precision": 0.7585,
+      "recall": 0.6928,
+      "f1": 0.7242,
+      "support": 2054
+    },
+    "neutral": {
+      "precision": 0.5402,
+      "recall": 0.5402,
+      "f1": 0.5402,
+      "support": 1666
+    },
+    "sadness": {
+      "precision": 0.4818,
+      "recall": 0.4371,
+      "f1": 0.4583,
+      "support": 302
+    },
+    "surprise": {
+      "precision": 0.437,
+      "recall": 0.5184,
+      "f1": 0.4742,
+      "support": 488
+    }
+  },
+  "confusion_matrix": [
+    [
+      351,
+      8,
+      8,
+      84,
+      214,
+      21,
+      40
+    ],
+    [
+      36,
+      21,
+      3,
+      13,
+      10,
+      7,
+      6
+    ],
+    [
+      15,
+      1,
+      38,
+      15,
+      18,
+      6,
+      2
+    ],
+    [
+      153,
+      5,
+      9,
+      1423,
+      344,
+      44,
+      76
+    ],
+    [
+      272,
+      6,
+      8,
+      252,
+      900,
+      48,
+      180
+    ],
+    [
+      39,
+      0,
+      6,
+      39,
+      64,
+      132,
+      22
+    ],
+    [
+      48,
+      1,
+      4,
+      50,
+      116,
+      16,
+      253
+    ]
+  ],
+  "labels": [
+    "anger",
+    "disgust",
+    "fear",
+    "joy",
+    "neutral",
+    "sadness",
+    "surprise"
+  ],
+  "split": "GoEmotions ekman test.tsv (held out)",
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 1.7001,
+      "val_acc": 0.524,
+      "val_macro_f1": 0.4522
+    },
+    {
+      "epoch": 2,
+      "train_loss": 1.4664,
+      "val_acc": 0.5284,
+      "val_macro_f1": 0.479
+    },
+    {
+      "epoch": 3,
+      "train_loss": 1.3406,
+      "val_acc": 0.542,
+      "val_macro_f1": 0.5026
+    }
+  ],
+  "params": 345705,
+  "training_seconds": 917.5
+}

@@ -4,3 +4,6 @@ data/raw/
 data/Attack_Dataset.csv
 artifacts_v5/*.pt
 data/dataset_v5.jsonl
+artifacts_gen/*.pt
+artifacts_gen2/*.pt
+artifacts_gen2/corpus_ids.npy

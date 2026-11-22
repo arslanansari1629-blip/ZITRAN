@@ -1,0 +1,14 @@
+[1/4] Loading GoEmotions...
+      train=27234 {6: 3858, 4: 7000, 3: 7000, 0: 5579, 5: 2468, 1: 638, 2: 691} test=5427
+[2/4] BPE tokenizer...
+[3/4] Training emotion Transformer (train=24509)...
+      params=345,705
+      {'epoch': 1, 'train_loss': 1.7001, 'val_acc': 0.524, 'val_macro_f1': 0.4522} (513s)
+      {'epoch': 2, 'train_loss': 1.4664, 'val_acc': 0.5284, 'val_macro_f1': 0.479} (701s)
+      {'epoch': 3, 'train_loss': 1.3406, 'val_acc': 0.542, 'val_macro_f1': 0.5026} (898s)
+[4/4] Official GoEmotions test + save...
+{
+  "test_accuracy": 0.5745,
+  "macro_f1": 0.4819,
+  "params": 345705
+}
