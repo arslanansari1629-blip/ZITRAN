@@ -1,0 +1,200 @@
+{
+  "accuracy": 0.7164,
+  "binary_threat_accuracy": 0.8493,
+  "per_class": {
+    "benign": {
+      "precision": 0.7201,
+      "recall": 0.8685,
+      "f1": 0.7874,
+      "support": 4000
+    },
+    "malware": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 15
+    },
+    "phishing": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0
+    },
+    "intrusion_dos": {
+      "precision": 0.9457,
+      "recall": 0.823,
+      "f1": 0.8801,
+      "support": 4000
+    },
+    "exploit_injection": {
+      "precision": 0.3477,
+      "recall": 0.6296,
+      "f1": 0.448,
+      "support": 1053
+    },
+    "credential_attack": {
+      "precision": 0.7812,
+      "recall": 0.0143,
+      "f1": 0.028,
+      "support": 1753
+    },
+    "exfiltration": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0
+    },
+    "recon_scan": {
+      "precision": 0.6797,
+      "recall": 0.879,
+      "f1": 0.7666,
+      "support": 2421
+    },
+    "ransomware": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0
+    },
+    "command_control": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 133
+    }
+  },
+  "confusion_matrix": [
+    [
+      3474,
+      0,
+      0,
+      71,
+      122,
+      0,
+      0,
+      333,
+      0,
+      0
+    ],
+    [
+      4,
+      0,
+      0,
+      0,
+      11,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      447,
+      0,
+      0,
+      3292,
+      154,
+      0,
+      0,
+      107,
+      0,
+      0
+    ],
+    [
+      373,
+      0,
+      0,
+      0,
+      663,
+      0,
+      0,
+      17,
+      0,
+      0
+    ],
+    [
+      428,
+      0,
+      0,
+      14,
+      852,
+      25,
+      0,
+      434,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      80,
+      0,
+      0,
+      104,
+      102,
+      7,
+      0,
+      2128,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      18,
+      0,
+      0,
+      0,
+      3,
+      0,
+      0,
+      112,
+      0,
+      0
+    ]
+  ],
+  "labels": [
+    "benign",
+    "malware",
+    "phishing",
+    "intrusion_dos",
+    "exploit_injection",
+    "credential_attack",
+    "exfiltration",
+    "recon_scan",
+    "ransomware",
+    "command_control"
+  ]
+}

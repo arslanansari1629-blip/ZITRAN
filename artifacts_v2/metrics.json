@@ -1,0 +1,319 @@
+{
+  "accuracy": 0.9653,
+  "binary_threat_accuracy": 0.9712,
+  "per_class": {
+    "benign": {
+      "precision": 0.9513,
+      "recall": 0.8467,
+      "f1": 0.8959,
+      "support": 300
+    },
+    "malware": {
+      "precision": 1.0,
+      "recall": 0.9867,
+      "f1": 0.9933,
+      "support": 300
+    },
+    "phishing": {
+      "precision": 0.9327,
+      "recall": 0.97,
+      "f1": 0.951,
+      "support": 300
+    },
+    "intrusion_dos": {
+      "precision": 0.9881,
+      "recall": 0.9708,
+      "f1": 0.9794,
+      "support": 171
+    },
+    "exploit_injection": {
+      "precision": 0.9519,
+      "recall": 1.0,
+      "f1": 0.9754,
+      "support": 198
+    },
+    "credential_attack": {
+      "precision": 1.0,
+      "recall": 0.9944,
+      "f1": 0.9972,
+      "support": 179
+    },
+    "exfiltration": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 207
+    },
+    "recon_scan": {
+      "precision": 0.9429,
+      "recall": 0.9635,
+      "f1": 0.9531,
+      "support": 137
+    },
+    "ransomware": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 103
+    },
+    "command_control": {
+      "precision": 0.8824,
+      "recall": 1.0,
+      "f1": 0.9375,
+      "support": 120
+    }
+  },
+  "confusion_matrix": [
+    [
+      254,
+      0,
+      18,
+      0,
+      9,
+      0,
+      0,
+      3,
+      0,
+      16
+    ],
+    [
+      0,
+      296,
+      3,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      9,
+      0,
+      291,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      166,
+      0,
+      0,
+      0,
+      5,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      198,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      0,
+      0,
+      0,
+      178,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      207,
+      0,
+      0,
+      0
+    ],
+    [
+      3,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      132,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      103,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      120
+    ]
+  ],
+  "labels": [
+    "benign",
+    "malware",
+    "phishing",
+    "intrusion_dos",
+    "exploit_injection",
+    "credential_attack",
+    "exfiltration",
+    "recon_scan",
+    "ransomware",
+    "command_control"
+  ],
+  "official_kddtest_accuracy": 0.7164,
+  "official_kddtest_binary": 0.8493,
+  "official_kddtest_per_class": {
+    "benign": {
+      "precision": 0.7201,
+      "recall": 0.8685,
+      "f1": 0.7874,
+      "support": 4000
+    },
+    "malware": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 15
+    },
+    "phishing": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0
+    },
+    "intrusion_dos": {
+      "precision": 0.9457,
+      "recall": 0.823,
+      "f1": 0.8801,
+      "support": 4000
+    },
+    "exploit_injection": {
+      "precision": 0.3477,
+      "recall": 0.6296,
+      "f1": 0.448,
+      "support": 1053
+    },
+    "credential_attack": {
+      "precision": 0.7812,
+      "recall": 0.0143,
+      "f1": 0.028,
+      "support": 1753
+    },
+    "exfiltration": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0
+    },
+    "recon_scan": {
+      "precision": 0.6797,
+      "recall": 0.879,
+      "f1": 0.7666,
+      "support": 2421
+    },
+    "ransomware": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0
+    },
+    "command_control": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 133
+    }
+  },
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.6047,
+      "train_acc": 0.8394,
+      "val_accuracy_ema": 0.5529,
+      "val_binary_ema": 0.7931
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.24,
+      "train_acc": 0.9506,
+      "val_accuracy_ema": 0.9161,
+      "val_binary_ema": 0.8988
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.1677,
+      "train_acc": 0.9691,
+      "val_accuracy_ema": 0.9494,
+      "val_binary_ema": 0.9618
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.136,
+      "train_acc": 0.9767,
+      "val_accuracy_ema": 0.9583,
+      "val_binary_ema": 0.9722
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.1058,
+      "train_acc": 0.9836,
+      "val_accuracy_ema": 0.9638,
+      "val_binary_ema": 0.9712
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.0879,
+      "train_acc": 0.9882,
+      "val_accuracy_ema": 0.9653,
+      "val_binary_ema": 0.9712
+    }
+  ],
+  "params": 1088508,
+  "training_seconds": 1343.1,
+  "config": {
+    "d_model": 144,
+    "layers": 3,
+    "heads": 4,
+    "ff": 288,
+    "vocab": 4000,
+    "max_len": 56,
+    "epochs_run": 6
+  }
+}
