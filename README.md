@@ -23,6 +23,31 @@ no pretrained weights, no fine-tuning, no ML frameworks. Only NumPy + Python std
 Each prediction also returns: confidence, threat probability, risk level
 (`NONE/MEDIUM/HIGH/CRITICAL`), top-3 classes, and a recommended defensive action.
 
+## 🧠 Conversational assistant upgrade — talk, reasoning & logic
+
+ZITRAN now **talks like an assistant**, not just a classifier (`zitran/assistant.py` +
+`zitran/reasoning.py`, both in the web chat and CLI, with per-session memory):
+
+- **Dialogue**: greetings, remembers your name & the last analysis, follow-ups —
+  ask **"why?"** (full evidence trail), **"what should I do?"** (response playbook),
+  **"tell me more / MITRE?"**, **"which model is best?"** (live metrics comparison)
+- **Reasoning trail** for every verdict: Observe → URL/evidence extraction →
+  corroboration (rules vs neural model) → elimination (why the runner-up lost) →
+  risk logic → **grounding in the closest real scenario from the refined
+  Attack_Dataset (MITRE technique, detection method, solution)**
+- **Logic & math**: safe built-in evaluator ("what is 23*7+5?" → 166; boolean logic too)
+- **Knowledge base**: defensive explanations (phishing, ransomware, SQLi, XSS, MITRE, Zero Trust, MFA, SOC…)
+- **Safety**: refuses attack instructions, offers the defensive playbook instead
+- Honest scope: this is a specialist analyst with structured reasoning — not a
+  general-purpose LLM; open-domain chat outside security will be routed to analysis or answered from the KB.
+
+Test the conversation:
+```bash
+python3 tests/test_assistant.py     # memory, follow-ups, math, knowledge, refusal
+# in chat, try this sequence:  "my name is Alex" → paste an incident → "why?" →
+# "what should I do?" → "what is my name?" → "what is 23*7+5?"
+```
+
 ## 💬 Chat interface — and how to test it
 
 **Web chat (easiest):**

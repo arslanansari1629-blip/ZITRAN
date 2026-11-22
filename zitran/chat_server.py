@@ -50,6 +50,17 @@ def get_predictor(model_id):
         _cache[model_id] = pred
         return pred
 
+_assistant = None
+def get_assistant():
+    global _assistant
+    if _assistant is None:
+        from zitran.assistant import Assistant
+        _assistant = Assistant(lambda text, model_id="ensemble": get_predictor(model_id).predict(text))
+    return _assistant
+
+def assistant_reply(message, model_id="ensemble", session_id="default"):
+    return get_assistant().handle(session_id, message, model_id)
+
 def chat_reply(message, model_id="ensemble"):
     message = (message or "").strip()
     if not message:
@@ -88,7 +99,8 @@ class Handler(BaseHTTPRequestHandler):
         try:
             n = int(self.headers.get("Content-Length", 0))
             body = json.loads(self.rfile.read(n) or b"{}")
-            self._send(200, chat_reply(body.get("message", ""), body.get("model", "ensemble")))
+            self._send(200, assistant_reply(body.get("message", ""), body.get("model", "ensemble"),
+                                            body.get("session_id", "default")))
         except Exception as e:
             self._send(400, {"error": str(e)})
 

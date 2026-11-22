@@ -48,6 +48,8 @@
 </footer>
 <script>
 let checked = 0, threats = 0;
+let sessionId = localStorage.getItem('zitran_session') || ('web-' + Math.random().toString(36).slice(2, 10));
+localStorage.setItem('zitran_session', sessionId);
 const chat = document.getElementById('chat'), input = document.getElementById('input'),
       send = document.getElementById('send'), modelSel = document.getElementById('model');
 const examples = [
@@ -78,9 +80,14 @@ async function sendMsg() {
   const t = bubble('bot typing', 'ZITRAN is analysing…');
   try {
     const r = await fetch('/api/chat', { method: 'POST', headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ message: text, model: modelSel.value }) });
+      body: JSON.stringify({ message: text, model: modelSel.value, session_id: sessionId }) });
     const d = await r.json(); t.remove();
     if (d.error) { bubble('bot', '⚠️ ' + esc(d.error)); return; }
+    if (!d.predicted_class) {
+      const el = bubble('bot', ''); el.innerText = d.reply || '';
+      if (d.reasoning && d.reasoning.steps) showReasoning(d.reasoning);
+      return;
+    }
     checked++; if (d.is_threat) threats++;
     document.getElementById('stats').textContent = `checked: ${checked} · threats: ${threats}`;
     let html = `<span class="badge ${d.risk_level}">${d.risk_level} RISK</span> <b>${esc(d.predicted_class)}</b>` +
@@ -91,12 +98,23 @@ async function sendMsg() {
     if (d.model_votes) html += `<div class="votes"><b>Model votes:</b> ` +
       Object.entries(d.model_votes).map(([k, v]) => `${k}: ${esc(v.class)} (${(v.confidence*100).toFixed(0)}%)`).join(' · ') + `</div>`;
     bubble('bot', html);
+    if (d.reasoning && d.reasoning.steps) showReasoning(d.reasoning);
   } catch (e) { t.remove(); bubble('bot', '⚠️ Server error — is chat_server running?'); }
   send.disabled = false; input.focus();
 }
+function showReasoning(rs) {
+  const det = document.createElement('details'); det.className = 'msg bot'; det.style.maxWidth = '78%';
+  const sum = document.createElement('summary'); sum.textContent = '🧠 Reasoning trail (click)'; sum.style.cursor = 'pointer';
+  det.appendChild(sum);
+  rs.steps.forEach(st => { const p = document.createElement('div'); p.className = 'meta';
+    p.innerHTML = '<b>' + esc(st.step) + ':</b> ' + esc(st.detail); det.appendChild(p); });
+  if (rs.scenario) { const p = document.createElement('div'); p.className = 'meta';
+    p.innerHTML = '<b>Closest known scenario:</b> ' + esc(rs.scenario.title) + ' · MITRE ' + esc(rs.scenario.mitre); det.appendChild(p); }
+  chat.appendChild(det); chat.scrollTop = chat.scrollHeight;
+}
 send.onclick = sendMsg;
 input.addEventListener('keydown', e => { if (e.key === 'Enter') sendMsg(); });
-bubble('bot', '👋 I am <b>ZITRAN</b>. Paste any security event — a log line, suspicious URL, email text, flow record or plain-English incident — and I will tell you the threat class, risk level and what to do. Try an example chip above!');
+bubble('bot', '👋 I am <b>ZITRAN</b>, your defensive cybersecurity assistant. I can <b>talk</b>: ask me questions, paste a security event for analysis with a step-by-step reasoning trail, then ask <b>why?</b> or <b>what should I do?</b> — I remember our conversation. Try: “my name is …”, “what is phishing?”, “what is 23*7+5?”, or an example chip above!');
 loadModels(); input.focus();
 </script>
 </body>
