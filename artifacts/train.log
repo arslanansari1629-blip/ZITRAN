@@ -1,0 +1,24 @@
+[1/5] Generating synthetic cybersecurity dataset from scratch...
+      16000 samples | classes=10
+[2/5] Training BPE tokenizer from scratch...
+      vocab=2500 merges=2445
+[3/5] Building Transformer from scratch (random init, no pretrained weights)...
+      params=591,884 d=128 layers=2 heads=4
+[4/5] Training (pure NumPy backprop + Adam + cosine LR)...
+      epoch  1/10 loss=0.0938 train_acc=0.977 val_acc=1.000 binary=1.000 (103s)
+      epoch  2/10 loss=0.0000 train_acc=1.000 val_acc=1.000 binary=1.000 (182s)
+      epoch  3/10 loss=0.0000 train_acc=1.000 val_acc=1.000 binary=1.000 (260s)
+      epoch  4/10 loss=0.0000 train_acc=1.000 val_acc=1.000 binary=1.000 (340s)
+      epoch  5/10 loss=0.0000 train_acc=1.000 val_acc=1.000 binary=1.000 (421s)
+      epoch  6/10 loss=0.0000 train_acc=1.000 val_acc=1.000 binary=1.000 (504s)
+      epoch  7/10 loss=0.0000 train_acc=1.000 val_acc=1.000 binary=1.000 (582s)
+      epoch  8/10 loss=0.0000 train_acc=1.000 val_acc=1.000 binary=1.000 (662s)
+      epoch  9/10 loss=0.0000 train_acc=1.000 val_acc=1.000 binary=1.000 (741s)
+      epoch 10/10 loss=0.0000 train_acc=1.000 val_acc=1.000 binary=1.000 (818s)
+[5/5] Final evaluation + saving artifacts...
+{
+  "accuracy": 1.0,
+  "binary_threat_accuracy": 1.0,
+  "params": 591884
+}
+Saved: artifacts/zitran_model.npz, tokenizer.json, metrics.json, data/dataset.jsonl

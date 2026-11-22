@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+data/raw/
+data/Attack_Dataset.csv
+artifacts_v5/*.pt
+data/dataset_v5.jsonl

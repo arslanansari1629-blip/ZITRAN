@@ -1,0 +1,25 @@
+[1/7] Corpus: telemetry + free-text + refined Attack_Dataset...
+      total=75935 attack_train_rows_used=5131 attack_heldout=1700
+      by_source={'enron-spam': 3919, 'jpcert-phishurl': 2600, 'synthetic': 4162, 'ctu13': 1672, 'nsl-kdd': 4149, 'malicious-urls': 5171, 'synthetic-text': 22000, 'synthetic-augmented': 22000, 'attack-dataset': 5131, 'attack-dataset-event': 5131}
+[2/7] Reusing v3 tokenizer...
+      vocab=4000 X=(75935, 56) (123s)
+[3/7] Transformer v4 MLP-head d=144 L=3 ff=288 train=22100
+      params=1,109,388
+[4/7] Training...
+      {'epoch': 1, 'train_loss': 0.5907, 'train_acc': 0.8334, 'val_accuracy_ema': 0.9264, 'val_binary_ema': 0.9772} (725s)
+      {'epoch': 2, 'train_loss': 0.277, 'train_acc': 0.9294, 'val_accuracy_ema': 0.9405, 'val_binary_ema': 0.9849} (1353s)
+      {'epoch': 3, 'train_loss': 0.1968, 'train_acc': 0.9533, 'val_accuracy_ema': 0.9444, 'val_binary_ema': 0.9872} (1909s)
+      {'epoch': 4, 'train_loss': 0.1133, 'train_acc': 0.9795, 'val_accuracy_ema': 0.9467, 'val_binary_ema': 0.9895} (2417s)
+[5/7] Calibration + attack-dataset held-out test (unseen scenarios)...
+      T=0.85 ECE 0.0378 -> 0.0201
+      attack heldout n=1700 acc=0.7353 binary=0.9994
+[6/7] Official KDDTest+...
+      acc=0.6468 binary=0.8742
+[7/7] Saving artifacts_v4...
+{
+  "val": 0.9467,
+  "attack_heldout": 0.7353,
+  "official": 0.6468,
+  "temperature": 0.85,
+  "params": 1109388
+}
