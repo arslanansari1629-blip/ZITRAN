@@ -84,6 +84,15 @@ class Assistant:
             extra["emotion"] = emo
             extra["session_mood"] = max(set(s["emotions"]), key=s["emotions"].count) if s["emotions"] else None
 
+        gen_ans = None
+        q_like = re.match(r"\s*(who|what|which|where|when|tell me|name the|give me|is|are|do|does)\b", low) or "capital of" in low
+        followup = bool(s["last"]) and any(k in low for k in ["why", "what should i do", "tell me more", "more detail", "mitre", "fix", "solution"])
+        if q_like and not followup and not re.search(r"\d+\s*[-+*/]", low) and not any(k in low for k in OFFENSIVE + ["help", "what can you do", "capabilit", "how to test"]):
+            try:
+                from zitran.general_kb import answer_general
+                gen_ans = answer_general(msg)
+            except Exception:
+                gen_ans = None
         m = re.search(r"my name is ([a-zA-Z]{2,20})", low)
         if m:
             s["name"] = m.group(1).capitalize(); reply = f"Nice to meet you, {s['name']}! I'll remember that for this session. Ask me to analyse a security event, explain a concept, or try 'why?' after an analysis."
@@ -110,32 +119,27 @@ class Assistant:
                          "html_preview": g["html"][:1200]}
             except Exception as e:
                 reply = f"I tried to build that page but hit an error: {e}"
-        elif re.match(r"\s*(who is|who was|who's|what is the capital|capital of|tell me about|what is|what's)\b", low) and not re.search(r"[0-9]", low):
-            try:
-                from zitran.general_kb import answer_general
-                ans = answer_general(msg)
-            except Exception:
-                ans = None
-            if ans:
-                reply = ans + "\n\n(Ask me anything else — or paste a security event for a full analysis.)"
-            elif re.search(r"who is|who was", low):
-                reply = ("I don't have reliable facts about that person in my built-in knowledge, and I won't make things up. "
-                         "I know major figures like Cristiano Ronaldo, Messi, Einstein, Gandhi, Elon Musk — and I'm strongest on cybersecurity. "
-                         "Try asking me about them, a country's capital, or any security topic!")
+        elif gen_ans:
+            reply = gen_ans + "\n\n(Ask me anything else — or paste a security event for a full analysis.)"
+            ans = gen_ans
+        elif re.match(r"\s*(who is|who was|who's)\b", low) and not gen_ans:
+            reply = ("I don't have reliable facts about that person in my built-in knowledge, and I won't make things up. "
+                     "I know major figures like Cristiano Ronaldo, Messi, Einstein, Gandhi, Elon Musk — and I'm strongest on cybersecurity. "
+                     "Try asking me about them, a country's capital or currency, an element, or any security topic!")
+        elif re.match(r"\s*(what is|what's|tell me about|explain)\b", low) and not re.search(r"[0-9]", low):
+            hit = next((v for k, v in KNOWLEDGE.items() if k in low), None)
+            if hit:
+                reply = hit
             else:
-                hit = next((v for k, v in KNOWLEDGE.items() if k in low), None)
-                if hit:
-                    reply = hit
+                pred = self.predict(msg, model_id) if self.predict else None
+                if pred:
+                    rs = reason(msg, pred); pred = {**pred, "reasoning": rs}
+                    s["last"], s["last_text"] = pred, msg
+                    reply = (f"**Analysis: {pred['predicted_class']}** — risk **{pred['risk_level']}**, confidence {pred['confidence']:.0%}. "
+                             f"{pred['recommended_action']} Ask me **'why?'** for the evidence trail.")
+                    extra = {**extra, "prediction": pred, **pred, "reasoning": rs}
                 else:
-                    pred = self.predict(msg, model_id) if self.predict else None
-                    if pred:
-                        rs = reason(msg, pred); pred = {**pred, "reasoning": rs}
-                        s["last"], s["last_text"] = pred, msg
-                        reply = (f"**Analysis: {pred['predicted_class']}** — risk **{pred['risk_level']}**, confidence {pred['confidence']:.0%}. "
-                                 f"{pred['recommended_action']} Ask me **'why?'** for the evidence trail.")
-                        extra = {**extra, "prediction": pred, **pred, "reasoning": rs}
-                    else:
-                        reply = "I'm not sure about that one — try a security question, a factual question I cover, or ask me to build a web page!"
+                    reply = "I'm not sure about that one — try a security question, a factual question I cover, or ask me to build a web page!"
         elif any(k in low for k in ["how to test", "how can i test", "test you", "how do i use", "help", "what can you do", "capabilit"]):
             reply = ("Here's how to test me:\n"
                      "1) Paste an attack description (e.g. 'files encrypted, ransom note demands bitcoin') — I classify + explain my reasoning.\n"
@@ -218,4 +222,12 @@ class Assistant:
                              f"Reasoning in short: {agree} Ask me **'why?'** for the full evidence trail, or **'what should I do?'** for the response playbook.")
                     extra = {"prediction": pred, **pred, "reasoning": rs}
         s["history"].append({"user": msg, "reply": reply})
+        try:
+            from zitran.self_learn import log_interaction
+            src = ("world_data" if extra.get("generated_url") is None and any(k in low for k in ["who is", "what is", "capital", "currency", "language"])
+                   else "codegen" if extra.get("generated_url") else
+                   "classifier" if extra.get("prediction") else "assistant")
+            log_interaction(msg, reply, source=src)
+        except Exception:
+            pass
         return {"reply": reply, "model_used": model_id, "session_turns": s["count"], **extra}

@@ -1,0 +1,39 @@
+[1/6] Building world + self-teaching + rehearsal corpora...
+'TLS/SSL connection has been closed (EOF) (_ssl.c:992)' thrown while requesting HEAD https://huggingface.co/datasets/teknium/OpenHermes-2.5/resolve/main/README.md
+Retrying in 1s [Retry 1/5].
+'TLS/SSL connection has been closed (EOF) (_ssl.c:992)' thrown while requesting HEAD https://huggingface.co/datasets/teknium/OpenHermes-2.5/resolve/main/README.md
+Retrying in 2s [Retry 2/5].
+'TLS/SSL connection has been closed (EOF) (_ssl.c:992)' thrown while requesting HEAD https://huggingface.co/datasets/teknium/OpenHermes-2.5/resolve/main/README.md
+Retrying in 4s [Retry 3/5].
+'TLS/SSL connection has been closed (EOF) (_ssl.c:992)' thrown while requesting HEAD https://huggingface.co/datasets/teknium/OpenHermes-2.5/resolve/main/README.md
+Retrying in 8s [Retry 4/5].
+'TLS/SSL connection has been closed (EOF) (_ssl.c:992)' thrown while requesting HEAD https://huggingface.co/datasets/teknium/OpenHermes-2.5/resolve/main/README.md
+Retrying in 8s [Retry 5/5].
+'TLS/SSL connection has been closed (EOF) (_ssl.c:992)' thrown while requesting HEAD https://huggingface.co/datasets/teknium/OpenHermes-2.5/resolve/main/README.md
+[instruction] OpenHermes via HF unavailable (ConnectionError); using GitHub-hosted Alpaca fallback
+      world=1890 self_teaching=3335 rehearsal=5000 total_docs=15450 (instruction: Alpaca (GitHub fallback for OpenHermes))
+[2/6] Tokenizing (Gen2 BPE vocab)...
+      tokens=0.94M (26s)
+[3/6] Loaded Gen2 checkpoint (19,312,128 params). Measuring BEFORE...
+      world-knowledge perplexity BEFORE self-learning: 409.92
+[4/6] Self-learning fine-tune (250 steps x 24 x 80)...
+/home/user/ZITRAN/zitran/train_gen3.py:72: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  opt.step(); sched.step(); step += 1; losses.append(float(loss))
+      step 50 loss 4.885 (190s)
+      step 100 loss 4.465 (337s)
+      step 150 loss 4.240 (473s)
+      step 200 loss 4.172 (616s)
+      step 250 loss 4.085 (740s)
+[5/6] Measuring AFTER + generating samples...
+      world-knowledge perplexity AFTER self-learning: 42.35
+[6/6] Saved artifacts_gen3 {"world_perplexity_before": 409.92, "world_perplexity_after": 42.35, "steps": 250, "docs": 15450}
+PROMPT: Q: What is the capital of France? A: 
+  -> q : what is the capital of fran ce ? a : analy si s : this event is class i fied as exfiltration .
+PROMPT: Q: What is the capital of Japan? A: 
+  -> q : what is the capital of ja pa n ? a : analy si s : this event is class i fied as exfiltration .
+PROMPT: Q: What is photosynthesis? A: 
+  -> q : what is pho to sy n th es is ? a : analy si s : this event is class i fied as exfiltration .
+PROMPT: Q: What is phishing? A: 
+  -> q : what is phishing ? a : analy si s : this event is class i fied as exfiltration .
+EXIT=0

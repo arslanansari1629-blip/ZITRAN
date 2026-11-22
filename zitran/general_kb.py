@@ -49,6 +49,13 @@ STOP = set("who is the a an what where when why how do does did is are was were 
 def _words(t): return [w for w in re.findall(r"[a-z]{3,}", t.lower()) if w not in STOP]
 
 def answer_general(question):
+    # 1) exact world-data lookup (250 countries, 118 elements, encyclopedia)
+    try:
+        from zitran.world_data import answer_world
+        w = answer_world(question)
+        if w: return w
+    except Exception:
+        pass
     """Return a factual answer string, or None if not confidently known."""
     low = question.lower()
     m = re.search(r"capital of ([a-z ]+?)\??$", low)

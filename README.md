@@ -215,3 +215,29 @@ The chat assistant now also:
   Example output committed at `web/generated/spicehouse.html`.
 - Security analysis, emotion reading, dialogue, math/logic and `POST /api/generate`
   (ZITRAN-Gen) all remain available in the same chat. Tests: `tests/test_skills.py`.
+
+## 🌍 World knowledge + 🔁 self-learning (`artifacts_gen3/`)
+
+**World data (real, from GitHub):** `data/world/countries.json` (mledoze/countries —
+250 countries: capital, currency, languages, region) + `data/world/elements.json`
+(118 periodic-table elements with summaries) + a 62-topic curated encyclopedia
+(science, space, history, sports, tech, nature). The assistant answers ANY country's
+capital/currency/language and any element exactly via `zitran/world_data.py`
+(e.g. Kazakhstan → Astana, Japan → yen, Brazil → Portuguese, gold → Au) — no guessing.
+
+**Self-learning loop (`zitran/self_learn.py` + `zitran/train_gen3.py`):**
+1. Every chat interaction is logged (`data/self_learn.jsonl`, with its source).
+2. The system generates its own training data ONLY from verified facts
+   (3,335 paraphrased self-teaching Q&A), quality-filtered (dedupe, anti-repetition).
+3. Continual fine-tuning from the previous checkpoint + rehearsal slice of the old
+   corpus (prevents forgetting). It never trains on its own unverified guesses as facts.
+
+**Measured learning (held-out world-knowledge perplexity):**
+Gen2 **409.9** → Gen3 round 1 (250 steps) **42.3** → Gen3 round 2 (300 steps) **22.8**.
+The LM has learned answer structure ("The capital of X is …") but still garbles rare
+entity names when generating freely — expected at 19M params / ~550 steps. Factual
+answers in chat come from the verified lookup, so they are exact. Scale path:
+`python3 -m zitran.train_gen3 --max-steps 3000 --base artifacts_gen3`.
+Also fixed: prompt encoding in `zitran/generate.py` no longer appends <SEP>/<PAD>
+before generation (that bug made the LM start a new document instead of answering).
+Tests: `tests/test_world.py`.

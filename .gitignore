@@ -7,3 +7,6 @@ data/dataset_v5.jsonl
 artifacts_gen/*.pt
 artifacts_gen2/*.pt
 artifacts_gen2/corpus_ids.npy
+artifacts_gen3/*.pt
+artifacts_gen3/corpus_ids.npy
+data/self_learn.jsonl
