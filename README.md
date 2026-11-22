@@ -138,6 +138,33 @@ python3 -m zitran.train_v4
 python3 -m zitran.predict artifacts_v4 "union select password dump sql injection login bypass"
 ```
 
+## ZITRAN v5 — 50M-parameter model (`artifacts_v5/`, PyTorch)
+
+**Architecture (exactly counted, asserted in code): 49,619,980 parameters** —
+d=512, 15 encoder layers, 8 heads, ff=2048, MLP head, dropout 0.1, multi-task
+outputs (`zitran/model_torch.py`). Trained with AdamW + OneCycle + label
+smoothing + class weights on **all data pooled: 109,264 samples** from NSL-KDD,
+CTU-13, UNSW-NB15 (new, 175k flows), Enron, JPCERT, malicious-URL corpus,
+refined Attack_Dataset, synthetic + augmented text (`data/dataset_v5.jsonl`).
+
+**Honest status — read this before using v5:** on 2 CPU cores / 4GB RAM
+(one OOM killed the first attempt; batch/seq were tuned to fit), the run was
+step-budgeted to 600 steps × batch 24 (~14.4k samples, <1 epoch, ~35 min).
+Val accuracy climbed 28% → 43% → 53% → 58% → 69% (subsets) and **74.3% on the
+full validation set**, but v5 is **undertrained and does NOT beat v4 yet**
+(v4: 94.7% mixed val, 73.5% attack held-out; v5 attack subset 19.2%). Bigger
+≠ better without compute: v5 is a foundation checkpoint to keep training
+(`python3 -m zitran.train_v5 --max-steps 5000` on a GPU/multi-core box),
+not the current production model — **v4/ensemble remain the recommended models**.
+
+Checkpoints (190MB fp32 / 95MB fp16) exceed GitHub's 100MB file limit and are
+kept locally in `artifacts_v5/`, git-ignored; metrics/config are committed.
+
+```bash
+pip install torch   # v5 only; v1-v4 need just numpy
+python3 -m zitran.predict_v5 artifacts_v5 "ransom note pay bitcoin files encrypted"
+```
+
 ## Roadmap ideas
 - Train on real public corpora (e.g. CIC-IDS2017-style flows, phishing-email corpora) by swapping `data.py`
 - Add log-sequence mode, larger vocab/d-model, quantization for edge deployment, ONNX export

@@ -155,6 +155,30 @@ def build_mixed(cap_real=2600, synthetic_per_class=900, seed=123):
     rng.shuffle(uniq)
     return uniq
 
+UNSW_MAP = {"Normal": "benign", "DoS": "intrusion_dos", "Reconnaissance": "recon_scan",
+            "Exploits": "exploit_injection", "Generic": "exploit_injection", "Fuzzers": "exploit_injection",
+            "Shellcode": "exploit_injection", "Backdoor": "command_control", "Worms": "malware", "Analysis": "recon_scan"}
+UNSW_KEEP = ["dur","proto","service","state","spkts","dpkts","sbytes","dbytes","rate","sttl","dttl","sload","dload","sinpkt","dinpkt","smean","dmean","response_body_len","ct_srv_src","ct_dst_ltm","ct_src_dport_ltm","ct_dst_src_ltm","is_ftp_login","ct_flw_http_mthd","is_sm_ips_ports"]
+
+def load_unsw(cap_per_class=6000, seed=42):
+    import random as _r
+    rng = _r.Random(seed); out, counts = [], {}
+    path = os.path.join(RAW, "UNSW-NB15/UNSW_NB15.csv")
+    if not os.path.exists(path): path = os.path.join(RAW, "UNSW-NB15/datasets/UNSW_NB15.csv")
+    if not os.path.exists(path): return out
+    with open(path, newline="", encoding="utf-8-sig", errors="ignore") as f:
+        rows = list(csv.DictReader(f)); rng.shuffle(rows)
+        for row in rows:
+            lab = UNSW_MAP.get((row.get("attack_cat") or "").strip())
+            if lab is None or counts.get(lab, 0) >= cap_per_class: continue
+            counts[lab] = counts.get(lab, 0) + 1
+            parts = ["unsw flow"]
+            for k in UNSW_KEEP:
+                v = row.get(k, "")
+                parts.append(f"{k} {v}" if k in ("proto", "service", "state") else f"{k} {bucket(v)}")
+            out.append((" ".join(parts), LABELS.index(lab), "unsw-nb15"))
+    return out
+
 def load_official_test(cap_per_class=4000, seed=7):
     """NSL-KDD official KDDTest+ set — contains attack types NEVER in training."""
     rng = random.Random(seed)

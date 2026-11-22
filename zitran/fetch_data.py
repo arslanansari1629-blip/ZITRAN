@@ -16,6 +16,8 @@ SOURCES = [
      "JPCERT/CC real phishing URLs 2019-2026"),
     ("urldata", "https://github.com/savan77/Malicious-URL-Detection-using-Machine-Learning.git", "data",
      "Malicious vs benign URL corpus (dataNN.csv, ~650k URLs collected from public feeds)"),
+    ("UNSW-NB15", "https://github.com/notsodubeyous/IoT-Network-Intrusion-Detection-System-UNSW-NB15.git", "datasets",
+     "UNSW-NB15 175k real network flows with attack categories (UNSW_NB15.csv)"),
 ]
 
 def fetch():
