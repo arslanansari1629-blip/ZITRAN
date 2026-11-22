@@ -143,7 +143,7 @@ def build_world_corpus(seed=5):
         docs.append(f"{name}: {desc}.")
     for name, desc in CONTINENTS.items():
         docs.append(f"Q: Tell me about {name} (continent).\nA: {name} is the {desc}.")
-    for it in load_trivia():
+    for it in load_qa_bank():
         docs.append(f"Q: {it['q']}\nA: {it['a']}")
     rnd.shuffle(docs)
     return docs
@@ -194,10 +194,10 @@ def answer_world(q):
                "largest planet": "jupiter", "smallest planet": "earth", "morning star": "earth", "evening star": "earth"}
     for phrase, topic in ALIASES.items():
         if phrase in low and topic in ENCYCLOPEDIA: return ENCYCLOPEDIA[topic]
+    tv = answer_qa_bank(q)
+    if tv: return tv
     for topic, text in ENCYCLOPEDIA.items():
         if re.search(r"\b" + re.escape(topic) + r"\b", low): return text
-    tv = answer_trivia(q)
-    if tv: return tv
     return None
 
 INDIA_STATES = {
@@ -312,6 +312,57 @@ ENCYCLOPEDIA.update({
  "badminton": "Badminton is a fast racket sport using a shuttlecock; top nations include China, Indonesia, India, Denmark and Japan. Indian stars include P.V. Sindhu (two Olympic medals) and Saina Nehwal. The BWF World Championships are the top annual event after the Olympics.",
  "hockey india": "Field hockey is historically India's most successful Olympic team sport: 8 gold medals (1928-1980). The men's team won bronze at Tokyo 2020 and Paris 2024, ending a long medal drought. Major Dhyan Chand, the 'Wizard', is its greatest legend.",
 })
+
+import gzip as _gzip
+_qa_bank_cache = None
+_qa_index_cache = None
+
+def load_qa_bank():
+    """Unified fact bank: OpenTriviaQA (49,716) + Jeopardy (214,236) = ~264k Q&A."""
+    global _qa_bank_cache
+    if _qa_bank_cache is not None: return _qa_bank_cache
+    bank = list(load_trivia())
+    gz = os.path.join(WORLD, "jeopardy.jsonl.gz")
+    if os.path.exists(gz):
+        try:
+            with _gzip.open(gz, "rt", encoding="utf-8") as f:
+                for line in f:
+                    d = json.loads(line)
+                    if d.get("q") and d.get("a"): bank.append(d)
+        except Exception:
+            pass
+    _qa_bank_cache = bank
+    return bank
+
+def _qa_index():
+    global _qa_index_cache
+    if _qa_index_cache is not None: return _qa_index_cache
+    bank = load_qa_bank(); idx = {}; doc_kw = []
+    for i, it in enumerate(bank):
+        kw = set(_kw(it["q"]))
+        doc_kw.append(kw)
+        for w in kw: idx.setdefault(w, []).append(i)
+    _qa_index_cache = (idx, doc_kw)
+    return _qa_index_cache
+
+def answer_qa_bank(q):
+    """Fast inverted-index retrieval over ~264k real Q&A facts; strong matches only."""
+    words = set(_kw(q))
+    if len(words) < 2: return None
+    idx, doc_kw = _qa_index()
+    from collections import Counter
+    cand = Counter()
+    for w in words:
+        for i in idx.get(w, ()): cand[i] += 1
+    if not cand: return None
+    bank = load_qa_bank(); best, bs = None, 0.0
+    for i, inter in cand.most_common(60):
+        if inter < 3: continue
+        score = inter / max(1, len(doc_kw[i]))
+        if score > bs: best, bs = bank[i], score
+    if best and bs >= 0.55:
+        return f"**{best['a']}** — {best['q'].rstrip('?')}? The answer is {best['a']}."
+    return None
 
 if __name__ == "__main__":
     docs = build_world_corpus()

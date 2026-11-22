@@ -266,3 +266,22 @@ generation needs billions of parameters and GPU-months. In chat, factual answers
 come from verified lookup over the real datasets (exact), while the LM keeps
 improving each round. Scale path:
 `python3 -m zitran.train_gen4 --max-steps 5000 --base artifacts_gen4`.
+
+## 📚 Knowledge scale-up: 263,948-fact QA bank + Gen5 (`artifacts_gen5/`)
+
+Added the largest real Q&A datasets reachable from this sandbox (GitHub-only egress):
+**Jeopardy (214,236 human Q&A)** + OpenTriviaQA (49,716) → a unified **263,948-fact
+bank** (`data/world/jeopardy.jsonl.gz`, 11 MB) served through an inverted index
+(`answer_qa_bank`) — e.g. the Galileo/Copernicus and noble-gas/helium clues answer
+correctly in chat. Gen5 continual training (900 steps, 36,464 docs, 1.75M tokens):
+held-out perplexity **144.4 → 75.9**; raw-LM fact probe remains **0/16** (pattern
+learned, facts not memorised) — the assistant's factual answers come from verified
+retrieval over this bank, which is why they are exact.
+
+**On "10 billion keywords / 10 billion facts":** 10B facts ≈ terabytes of text
+(for scale: all of Wikipedia is ~6.4M articles / ~4B words). Downloading, storing
+and training on that needs datacenter infra and GPU-months — impossible in any
+free CPU sandbox, regardless of code. The honest path at this scale is exactly
+what is built here: verified retrieval over ever-larger fact banks (264k now;
+Wikipedia/SQuAD/OpenHermes loaders slot in unchanged on an unrestricted machine)
++ a generative model that keeps improving each self-learning round.

@@ -25,7 +25,17 @@ def test_world_corpus_and_self_teaching():
 def test_quality_filter_rejects_repetition():
     assert quality_filter(["the the the the the the the the the the the the the the"]) == []
 
+
+def test_qa_bank_scale_and_retrieval():
+    from zitran.world_data import load_qa_bank, answer_qa_bank
+    assert len(load_qa_bank()) > 250_000  # trivia 49.7k + jeopardy 214k
+    r = answer_qa_bank("For the last 8 years of his life, Galileo was under house arrest for espousing this man's theory")
+    assert r and "Copernicus" in r, r
+    r2 = answer_qa_bank("of the 6 noble gases on the periodic table it is the lightest")
+    assert r2 and "helium" in r2.lower(), r2
+
 if __name__ == "__main__":
     test_real_datasets_loaded(); test_any_country_capital_currency_language()
     test_elements_and_encyclopedia(); test_world_corpus_and_self_teaching()
-    test_quality_filter_rejects_repetition(); print("WORLD + SELF-LEARN TESTS PASSED")
+    test_quality_filter_rejects_repetition(); test_qa_bank_scale_and_retrieval(); print("WORLD + SELF-LEARN TESTS PASSED")
+

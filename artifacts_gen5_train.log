@@ -1,0 +1,53 @@
+[1/6] Building world + self-teaching + rehearsal corpora...
+'TLS/SSL connection has been closed (EOF) (_ssl.c:992)' thrown while requesting HEAD https://huggingface.co/datasets/teknium/OpenHermes-2.5/resolve/main/README.md
+Retrying in 1s [Retry 1/5].
+'TLS/SSL connection has been closed (EOF) (_ssl.c:992)' thrown while requesting HEAD https://huggingface.co/datasets/teknium/OpenHermes-2.5/resolve/main/README.md
+Retrying in 2s [Retry 2/5].
+'TLS/SSL connection has been closed (EOF) (_ssl.c:992)' thrown while requesting HEAD https://huggingface.co/datasets/teknium/OpenHermes-2.5/resolve/main/README.md
+Retrying in 4s [Retry 3/5].
+'TLS/SSL connection has been closed (EOF) (_ssl.c:992)' thrown while requesting HEAD https://huggingface.co/datasets/teknium/OpenHermes-2.5/resolve/main/README.md
+Retrying in 8s [Retry 4/5].
+'TLS/SSL connection has been closed (EOF) (_ssl.c:992)' thrown while requesting HEAD https://huggingface.co/datasets/teknium/OpenHermes-2.5/resolve/main/README.md
+Retrying in 8s [Retry 5/5].
+'TLS/SSL connection has been closed (EOF) (_ssl.c:992)' thrown while requesting HEAD https://huggingface.co/datasets/teknium/OpenHermes-2.5/resolve/main/README.md
+[instruction] OpenHermes via HF unavailable (ConnectionError); using GitHub-hosted Alpaca fallback
+      world=20000 self_teaching=11464 rehearsal=5000 total_docs=36464 (instruction: Alpaca (GitHub fallback for OpenHermes))
+[2/6] Tokenizing (Gen2 BPE vocab)...
+      tokens=1.75M (32s)
+[3/6] Loaded artifacts_gen4 checkpoint (19,312,128 params). Measuring BEFORE...
+      world-knowledge perplexity BEFORE self-learning: 144.39
+[4/6] Self-learning fine-tune (900 steps x 24 x 80)...
+/home/user/ZITRAN/zitran/train_gen5.py:88: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  opt.step(); sched.step(); step += 1; losses.append(float(loss))
+      step 50 loss 4.511 (154s)
+      step 100 loss 4.440 (244s)
+      step 150 loss 4.374 (332s)
+      step 200 loss 4.374 (420s)
+      step 250 loss 4.338 (504s)
+      step 300 loss 4.280 (592s)
+      step 350 loss 4.221 (680s)
+      step 400 loss 4.247 (768s)
+      step 450 loss 4.216 (852s)
+      step 500 loss 4.220 (938s)
+      step 550 loss 4.183 (1027s)
+      step 600 loss 4.169 (1114s)
+      step 650 loss 4.154 (1204s)
+      step 700 loss 4.123 (1293s)
+      step 750 loss 4.119 (1386s)
+      step 800 loss 4.135 (1481s)
+      step 850 loss 4.107 (1576s)
+      step 900 loss 4.137 (1673s)
+[5/6] Measuring AFTER + generating samples...
+      world-knowledge perplexity AFTER self-learning: 75.89
+      FACT PROBE after training: 0/16 capitals generated correctly
+[6/6] Saved artifacts_gen5 {"world_perplexity_before": 144.39, "world_perplexity_after": 75.89, "steps": 900, "docs": 36464}
+PROMPT: Q: What is the capital of France? A: 
+  -> q : what is the capital of fran ce ? a : the capital of ma in o is b el and .
+PROMPT: Q: What is the capital of Japan? A: 
+  -> q : what is the capital of ja pa n ? a : the capital of ma in o is b el and .
+PROMPT: Q: What is photosynthesis? A: 
+  -> q : what is pho to sy n th es is ? a : the capital of ma in e a is k u a y .
+PROMPT: Q: What is phishing? A: 
+  -> q : what is phishing ? a : the capital of ma in e a is k u a y .
+EXIT=0

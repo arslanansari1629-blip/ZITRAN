@@ -1,0 +1,114 @@
+{
+ "fact_probe": {
+  "hits": 0,
+  "total": 16,
+  "detail": {
+   "France": {
+    "want": "Paris",
+    "ok": false,
+    "got": "q : what is the capital of fran ce ? a : the capital of m ex ic an is b el ement ."
+   },
+   "Japan": {
+    "want": "Tokyo",
+    "ok": false,
+    "got": "q : what is the capital of ja pa n ? a : the capital of li sh ar a , in is b el and ."
+   },
+   "Brazil": {
+    "want": "Bras\u00edlia",
+    "ok": false,
+    "got": "q : what is the capital of bra z il ? a : the capital of m ex ic an is b el ement ."
+   },
+   "India": {
+    "want": "New Delhi",
+    "ok": false,
+    "got": "q : what is the capital of in dia ? a : the capital of m ex ic an is b el ement ."
+   },
+   "Australia": {
+    "want": "Canberra",
+    "ok": false,
+    "got": "q : what is the capital of au st r ali a ? a : the capital of m ex ic o is b el ement ."
+   },
+   "Canada": {
+    "want": "Ottawa",
+    "ok": false,
+    "got": "q : what is the capital of canada ? a : the capital of m ex ic an is b el ement ."
+   },
+   "Germany": {
+    "want": "Berlin",
+    "ok": false,
+    "got": "q : what is the capital of ger many ? a : the capital of m ex ic an is b el ement ."
+   },
+   "Italy": {
+    "want": "Rome",
+    "ok": false,
+    "got": "q : what is the capital of it al y ? a : the capital of li sh ar a , in is b el a ."
+   },
+   "Spain": {
+    "want": "Madrid",
+    "ok": false,
+    "got": "q : what is the capital of spa in ? a : the capital of m ex ic an is b el ement ."
+   },
+   "Egypt": {
+    "want": "Cairo",
+    "ok": false,
+    "got": "q : what is the capital of eg yp t ? a : the capital of li a is n amed for ."
+   },
+   "China": {
+    "want": "Beijing",
+    "ok": false,
+    "got": "q : what is the capital of ch ina ? a : the capital of m ex ic an is b el ement ."
+   },
+   "Russia": {
+    "want": "Moscow",
+    "ok": false,
+    "got": "q : what is the capital of r us si a ? a : the capital of m ex ic an is b el ement ."
+   },
+   "Uttar Pradesh": {
+    "want": "Lucknow",
+    "ok": false,
+    "got": "q : what is the capital of u tt ar p ra de sh ? a : the capital of s co lo st is b el and ."
+   },
+   "Maharashtra": {
+    "want": "Mumbai",
+    "ok": false,
+    "got": "q : what is the capital of ma har a sh tra ? a : the capital of m ex ic o is b el l ."
+   },
+   "California": {
+    "want": "Sacramento",
+    "ok": false,
+    "got": "q : what is the capital of cali for n ia ? a : the capital of mal ia is n am i a , in ."
+   },
+   "Texas": {
+    "want": "Austin",
+    "ok": false,
+    "got": "q : what is the capital of texas ? a : the capital of m ex ic an is b el ement ."
+   }
+  }
+ },
+ "base": "artifacts_gen4 (fine-tuned, not from scratch)",
+ "params": 19312128,
+ "steps": 900,
+ "docs": 36464,
+ "tokens": 1745382,
+ "world_perplexity_before": 144.39,
+ "world_perplexity_after": 75.89,
+ "sources": [
+  "mledoze/countries (250 countries)",
+  "Bowserinator periodic table (118 elements)",
+  "curated encyclopedia (62 topics)",
+  "self-teaching paraphrases of verified facts",
+  "logged trusted interactions",
+  "rehearsal: Gen2 cyber+instruction slice",
+  "OpenTriviaQA (49,716 Q&A, 22 categories)",
+  "India (36) + US (50) state capitals",
+  "planets + continents tables",
+  "Jeopardy (214,236 Q&A) -> unified 263,948-fact QA bank"
+ ],
+ "samples_after": {
+  "Q: What is the capital of France?\nA:": "q : what is the capital of fran ce ? a : the capital of ma in o is b el and .",
+  "Q: What is the capital of Japan?\nA:": "q : what is the capital of ja pa n ? a : the capital of ma in o is b el and .",
+  "Q: What is photosynthesis?\nA:": "q : what is pho to sy n th es is ? a : the capital of ma in e a is k u a y .",
+  "Q: What is phishing?\nA:": "q : what is phishing ? a : the capital of ma in e a is k u a y ."
+ },
+ "seconds": 1688
+}

@@ -89,7 +89,8 @@ def generate_self_teaching(seed=3):
             docs.append(f"Q: What is the capital of {st_name}?\nA: The capital of {st_name} is {cap}.")
         for name, desc in PLANETS:
             docs.append(f"Q: Tell me about the planet {name}.\nA: {name} is {desc}.")
-        for it in rnd.sample(load_trivia(), min(4000, len(load_trivia()))):
+        from zitran.world_data import load_qa_bank
+        for it in rnd.sample(load_qa_bank(), min(8000, len(load_qa_bank()))):
             docs.append(f"Q: {it['q']}\nA: {it['a']}")
     except Exception:
         pass
