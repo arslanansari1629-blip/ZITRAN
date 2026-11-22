@@ -33,6 +33,19 @@ KNOWLEDGE = {
 OFFENSIVE = ["how to hack", "how do i hack", "create malware", "make malware", "write a virus", "make a ransomware",
              "exploit code", "hack into", "bypass password", "steal password", "ddos attack how", "how to phish", "send phishing"]
 
+
+INCIDENT_SIGNALS = ["ransom", "encrypt", "malware", "phishing", "virus", "trojan", "backdoor",
+    "breach", "hacked", "infected", "suspicious", "failed login", "brute force", "ddos",
+    "sql injection", "xss", "exploit", "payload", "ioc", "alert", "detected", "attack",
+    "unauthorized", "locked out", "stolen", "leaked", "http://", "https://", "www.", ".com",
+    ".exe", ".dll", "log", "server", "firewall", "vpn", "endpoint", "host", "database"]
+
+def _incident_like(low):
+    return sum(1 for k in INCIDENT_SIGNALS if k in low) >= 1
+
+def _question_like(low, msg):
+    return msg.rstrip().endswith("?") or bool(re.match(r"\s*(who|what|which|where|when|why|how|is|are|can|could|do|does|did|tell|name|give|list|explain)\b", low))
+
 class Assistant:
     def __init__(self, predict_fn):
         """predict_fn(text) -> classifier dict (chat_server supplies model-aware fn)."""
@@ -130,6 +143,10 @@ class Assistant:
             hit = next((v for k, v in KNOWLEDGE.items() if k in low), None)
             if hit:
                 reply = hit
+            elif not _incident_like(low):
+                reply = ("I don't have that in my verified knowledge yet, so I won't guess. "
+                         "I can answer questions about any country's capital/currency/language, chemical elements, famous people, science, history and cybersecurity — "
+                         "build web pages, do math/logic, and analyse security events. Try one of those, or rephrase and I'll do my best!")
             else:
                 pred = self.predict(msg, model_id) if self.predict else None
                 if pred:
@@ -205,8 +222,12 @@ class Assistant:
             reply = f"That evaluates to **{val}**."
         else:
             concept_hit = next((v for k, v in KNOWLEDGE.items() if k in low and ("what" in low or "explain" in low or "tell" in low or "?" in msg or len(low) < 60)), None)
-            if concept_hit and not any(w in low for w in ["detected", "attack on", "happened", "my ", "our ", "server", "host", "encrypted", "ransom", "demand", "infected", "breached", "locked", "stolen", "suspicious", "alert", "failed login"]):
+            if concept_hit and not _incident_like(low):
                 reply = concept_hit + "\n\nWant me to analyse a real example? Paste one and I'll classify it with reasoning."
+            elif _question_like(low, msg) and not _incident_like(low):
+                reply = ("Good question — I don't have a verified answer for that yet, and I'd rather say so than make something up. "
+                         "My knowledge covers: every country's capital/currency/language, chemical elements, famous people, science, space, history, sports, trivia, and deep cybersecurity. "
+                         "You can also ask me to build a web page, solve math/logic, or paste a security event for analysis.")
             else:
                 # default: treat as a security event to analyse
                 pred = self.predict(msg, model_id) if self.predict else None

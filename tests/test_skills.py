@@ -26,6 +26,19 @@ def test_unknown_person_honest():
     r = assistant_reply("who is Zqxwv Blorpington?", "ensemble", SID)
     assert "don't have reliable facts" in r["reply"], r["reply"]
 
+
+def test_currency_question_never_classified_fresh_and_after_incident():
+    sid = "bug-regression-session"
+    r1 = assistant_reply("ransomware encrypted all files, ransom note demands bitcoin", "ensemble", sid)
+    assert r1.get("predicted_class") == "ransomware", r1["reply"][:150]
+    r2 = assistant_reply("what currency is used in Japan?", "ensemble", sid)
+    assert "yen" in r2["reply"].lower() and "predicted_class" not in r2, r2["reply"][:200]
+    r3 = assistant_reply("what language is spoken in Brazil?", "ensemble", "bug-fresh")
+    assert "Portuguese" in r3["reply"] and "predicted_class" not in r3, r3["reply"][:200]
+    r4 = assistant_reply("who won the battle of waterloo?", "ensemble", "bug-fresh")
+    assert "predicted_class" not in r4, r4["reply"][:200]  # question -> never classified
+
 if __name__ == "__main__":
     test_who_is_ronaldo(); test_capital_and_math_still_work(); test_who_is_phishing_still_works()
-    test_build_html_page(); test_unknown_person_honest(); print("SKILLS TESTS PASSED")
+    test_build_html_page(); test_unknown_person_honest(); test_currency_question_never_classified_fresh_and_after_incident(); print("SKILLS TESTS PASSED")
+

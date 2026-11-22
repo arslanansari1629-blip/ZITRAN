@@ -133,6 +133,18 @@ def build_world_corpus(seed=5):
         for st in PARAGRAPH_STARTERS:
             docs.append(st.format(t=t) + text)
         docs.append(text)
+    for st_name, cap in INDIA_STATES.items():
+        docs.append(f"Q: What is the capital of {st_name} (Indian state)?\nA: The capital of {st_name} is {cap}.")
+        docs.append(f"Q: Which Indian state's capital is {cap}?\nA: {cap} is the capital of {st_name}.")
+    for st_name, cap in US_STATES.items():
+        docs.append(f"Q: What is the capital of {st_name} (US state)?\nA: The capital of the US state of {st_name} is {cap}.")
+    for name, desc in PLANETS:
+        docs.append(f"Q: Tell me about the planet {name}.\nA: {name} is {desc}.")
+        docs.append(f"{name}: {desc}.")
+    for name, desc in CONTINENTS.items():
+        docs.append(f"Q: Tell me about {name} (continent).\nA: {name} is the {desc}.")
+    for it in load_trivia():
+        docs.append(f"Q: {it['q']}\nA: {it['a']}")
     rnd.shuffle(docs)
     return docs
 
@@ -168,9 +180,138 @@ def answer_world(q):
         if "atomic number" in low or "atomic mass" in low or "weight" in low:
             return f"{em['name']} ({em['symbol']}): atomic number {em['number']}, atomic mass {em.get('atomic_mass')}, category {em.get('category')}."
         if em.get("summary"): return em["summary"][:600]
+    sm = None
+    for name in sorted(list(INDIA_STATES) + list(US_STATES), key=len, reverse=True):
+        if re.search(r"\b" + re.escape(name.lower()) + r"\b", low): sm = name; break
+    if sm and "capital" in low:
+        table = INDIA_STATES if sm in INDIA_STATES else US_STATES
+        region = "Indian state" if sm in INDIA_STATES else "US state"
+        return f"The capital of {sm} ({region}) is **{table[sm]}**."
+    for name, desc in PLANETS:
+        if re.search(r"\b" + re.escape(name.lower()) + r"\b", low) and any(k in low for k in ["planet", "tell", "about", "what", "describe"]):
+            return f"**{name}** — {desc}."
+    ALIASES = {"red planet": "mars", "father of the nation": "mahatma Gandhi", "city of nawabs": "lucknow",
+               "largest planet": "jupiter", "smallest planet": "earth", "morning star": "earth", "evening star": "earth"}
+    for phrase, topic in ALIASES.items():
+        if phrase in low and topic in ENCYCLOPEDIA: return ENCYCLOPEDIA[topic]
     for topic, text in ENCYCLOPEDIA.items():
-        if topic in low: return text
+        if re.search(r"\b" + re.escape(topic) + r"\b", low): return text
+    tv = answer_trivia(q)
+    if tv: return tv
     return None
+
+INDIA_STATES = {
+ "Andhra Pradesh":"Amaravati","Arunachal Pradesh":"Itanagar","Assam":"Dispur","Bihar":"Patna",
+ "Chhattisgarh":"Raipur","Goa":"Panaji","Gujarat":"Gandhinagar","Haryana":"Chandigarh",
+ "Himachal Pradesh":"Shimla","Jharkhand":"Ranchi","Karnataka":"Bengaluru","Kerala":"Thiruvananthapuram",
+ "Madhya Pradesh":"Bhopal","Maharashtra":"Mumbai","Manipur":"Imphal","Meghalaya":"Shillong",
+ "Mizoram":"Aizawl","Nagaland":"Kohima","Odisha":"Bhubaneswar","Punjab":"Chandigarh",
+ "Rajasthan":"Jaipur","Sikkim":"Gangtok","Tamil Nadu":"Chennai","Telangana":"Hyderabad",
+ "Tripura":"Agartala","Uttar Pradesh":"Lucknow","Uttarakhand":"Dehradun","West Bengal":"Kolkata",
+ "Delhi":"New Delhi","Jammu and Kashmir":"Srinagar","Ladakh":"Leh","Puducherry":"Puducherry",
+ "Chandigarh":"Chandigarh","Andaman and Nicobar":"Port Blair","Dadra and Nagar Haveli and Daman and Diu":"Daman",
+ "Lakshadweep":"Kavaratti"}
+US_STATES = {
+ "Alabama":"Montgomery","Alaska":"Juneau","Arizona":"Phoenix","Arkansas":"Little Rock","California":"Sacramento",
+ "Colorado":"Denver","Connecticut":"Hartford","Delaware":"Dover","Florida":"Tallahassee","Georgia":"Atlanta",
+ "Hawaii":"Honolulu","Idaho":"Boise","Illinois":"Springfield","Indiana":"Indianapolis","Iowa":"Des Moines",
+ "Kansas":"Topeka","Kentucky":"Frankfort","Louisiana":"Baton Rouge","Maine":"Augusta","Maryland":"Annapolis",
+ "Massachusetts":"Boston","Michigan":"Lansing","Minnesota":"Saint Paul","Mississippi":"Jackson","Missouri":"Jefferson City",
+ "Montana":"Helena","Nebraska":"Lincoln","Nevada":"Carson City","New Hampshire":"Concord","New Jersey":"Trenton",
+ "New Mexico":"Santa Fe","New York":"Albany","North Carolina":"Raleigh","North Dakota":"Bismarck","Ohio":"Columbus",
+ "Oklahoma":"Oklahoma City","Oregon":"Salem","Pennsylvania":"Harrisburg","Rhode Island":"Providence",
+ "South Carolina":"Columbia","South Dakota":"Pierre","Tennessee":"Nashville","Texas":"Austin","Utah":"Salt Lake City",
+ "Vermont":"Montpelier","Virginia":"Richmond","Washington":"Olympia","West Virginia":"Charleston",
+ "Wisconsin":"Madison","Wyoming":"Cheyenne"}
+PLANETS = [
+ ("Mercury","closest planet to the Sun, smallest planet, orbits in 88 days, heavily cratered, extreme temperature swings"),
+ ("Venus","hottest planet (about 465°C) due to thick CO2 atmosphere and runaway greenhouse effect, rotates backwards, similar size to Earth"),
+ ("Earth","our home, only known life-bearing planet, 71% ocean-covered, one moon, 4.54 billion years old"),
+ ("Mars","the Red Planet, home to Olympus Mons the tallest volcano, two small moons Phobos and Deimos, target of rover missions"),
+ ("Jupiter","largest planet, gas giant, Great Red Spot storm bigger than Earth, moon Ganymede is the solar system's largest"),
+ ("Saturn","famous for bright rings of ice and rock, lowest density planet (would float in water), moon Titan has liquid methane lakes"),
+ ("Uranus","ice giant tilted on its side (98 degrees), coldest atmosphere, pale blue-green from methane"),
+ ("Neptune","farthest planet from the Sun, fastest winds in the solar system (up to 2,100 km/h), deep blue colour")]
+CONTINENTS = {
+ "Asia":"largest continent by area and population (about 4.7 billion people), home to India, China, Japan and Mount Everest",
+ "Africa":"second-largest continent, 54 countries, Sahara the largest hot desert, Nile river, origin of humankind",
+ "Europe":"second-smallest continent, about 44 countries, birthplace of the Industrial Revolution and the Renaissance",
+ "North America":"third-largest continent, includes USA, Canada, Mexico; Grand Canyon and Rockies",
+ "South America":"fourth-largest continent, Amazon rainforest and river, Andes the longest mountain range",
+ "Australia":"smallest continent and a single country, unique wildlife like kangaroos and koalas, Great Barrier Reef",
+ "Antarctica":"coldest, driest, windiest continent, covered in ice, no permanent population, research stations only"}
+
+_trivia_cache = None
+def load_trivia():
+    global _trivia_cache
+    if _trivia_cache is not None: return _trivia_cache
+    p = os.path.join(WORLD, "trivia.json")
+    out = []
+    if os.path.exists(p):
+        try:
+            d = json.load(open(p))
+            for cat, items in d.items():
+                for it in items:
+                    q, a = str(it.get("question","")).strip(), str(it.get("answer","")).strip()
+                    if len(q) > 8 and 0 < len(a) < 200: out.append({"q": q, "a": a, "cat": cat})
+        except Exception: pass
+    _trivia_cache = out
+    return out
+
+_STOP = set("what is the of a an in on for to and or which who whom whose when where why how do does did is are was were".split())
+def _kw(text): return [w for w in re.findall(r"[a-z0-9]+", text.lower()) if w not in _STOP and len(w) > 2]
+
+def answer_trivia(q):
+    """Retrieval over 49,716 real trivia Q&A; answer only on strong overlap."""
+    words = set(_kw(q))
+    if len(words) < 2: return None
+    best, score = None, 0
+    for it in load_trivia():
+        qs = set(_kw(it["q"]))
+        if not qs: continue
+        ov = len(words & qs) / max(1, len(qs))
+        if ov > score: best, score = it, ov
+    if best and score >= 0.72:
+        return f"**{best['a']}** — {best['q'].rstrip('?')}? The answer is {best['a']}."
+    return None
+
+ENCYCLOPEDIA.update({
+ "periodic table": "The periodic table organises 118 chemical elements by atomic number into rows (periods) and columns (groups) with similar properties. It was pioneered by Dmitri Mendeleev in 1869, who predicted undiscovered elements from gaps in his table.",
+ "oxygen": "Oxygen (O, atomic number 8) is a colourless gas making up 21% of Earth's atmosphere, produced by photosynthesis and essential for respiration and combustion. Liquid oxygen is pale blue and magnetic.",
+ "gold": "Gold (Au, atomic number 79) is a dense, unreactive yellow metal prized since antiquity for coins, jewellery and electronics. It is measured in karats; the largest gold nuggets came from Australia.",
+ "iron": "Iron (Fe, atomic number 26) is the most common metal on Earth by mass, core of the planet, and key ingredient of steel. Humans have used iron for over 3,000 years (Iron Age).",
+ "hydrogen": "Hydrogen (H, atomic number 1) is the lightest and most abundant element in the universe (~75% of normal matter), fuel of stars via fusion, and combines with oxygen to make water.",
+ "carbon": "Carbon (C, atomic number 6) is the basis of all known life, forming more compounds than any other element. Its forms include diamond, graphite and graphene.",
+ "sun vs earth size": "The Sun's diameter is about 109 times Earth's; about 1.3 million Earths could fit inside it. Yet the Sun is an average-sized star (a G-type yellow dwarf).",
+ "great wall of china": "The Great Wall of China, built over centuries to repel northern invasions, stretches about 21,196 km including all branches. The Ming dynasty built the best-known sections; it is a UNESCO World Heritage site.",
+ "taj mahal": "The Taj Mahal in Agra, India, is a white-marble mausoleum built by Mughal emperor Shah Jahan (1632-1653) for his wife Mumtaz Mahal. It is a UNESCO site and one of the New7Wonders of the World. Lucknow, the capital of Uttar Pradesh, is about 335 km away.",
+ "india states": "India has 28 states and 8 Union Territories. Uttar Pradesh is the most populous state; Rajasthan the largest by area; Goa the smallest state. State capitals include Lucknow (UP), Mumbai (Maharashtra), Chennai (Tamil Nadu), Bengaluru (Karnataka) and Kolkata (West Bengal).",
+ "lucknow": "Lucknow is the capital and largest city of Uttar Pradesh, India, known as the City of Nawabs, famous for Awadhi culture, tehzeeb (etiquette), chikankari embroidery, kebabs, and monuments like Bara Imambara and Rumi Darwaza.",
+ "himalayas": "The Himalayas are Asia's great mountain system, stretching ~2,400 km across five countries, formed by the collision of the Indian and Eurasian plates (still rising ~5 mm/year). They include Everest and feed rivers like the Ganga and Brahmaputra.",
+ "ganga river": "The Ganga (Ganges) is India's most sacred river, flowing 2,525 km from the Himalayas (Gangotri) to the Bay of Bengal. It supports hundreds of millions of people; Varanasi and Prayagraj (Kumbh Mela) are major pilgrimage cities on its banks.",
+ "sahara": "The Sahara in North Africa is the world's largest hot desert, about 9.2 million km2 (nearly the size of the USA). Temperatures can exceed 50°C, yet it also has mountains, oases and rock art from wetter eras.",
+ "amazon rainforest": "The Amazon rainforest covers ~7 million km2 in South America (60% in Brazil), produces vast oxygen and rainfall, and holds ~10% of known species. It is called the 'lungs of the Earth' though ocean phytoplankton produce more oxygen.",
+ "cooking rice": "To cook basmati rice: rinse 1 cup rice, soak 20-30 minutes, boil in 1.5 cups water with salt, cover on low heat 10-12 minutes, rest 5 minutes, then fluff. The water ratio and resting give separate, fluffy grains.",
+ "covid": "COVID-19 is a disease caused by the SARS-CoV-2 coronavirus, declared a pandemic in March 2020. Vaccines (mRNA, viral-vector and others) greatly reduced severe disease; over 7 million deaths were confirmed worldwide.",
+ "vaccine": "Vaccines train the immune system using harmless forms or parts of a pathogen (or its genetic instructions), creating memory cells so real infection is fought faster. Vaccination eradicated smallpox and nearly polio.",
+ "antibiotics": "Antibiotics are medicines that kill or stop bacteria (not viruses). Penicillin, discovered by Alexander Fleming in 1928, was the first widely used antibiotic. Misuse drives antibiotic resistance, a major global health threat.",
+ "human evolution": "Humans (Homo sapiens) evolved in Africa about 300,000 years ago. Close relatives include Neanderthals and Denisovans, with whom early humans interbred. Agriculture began ~12,000 years ago; writing ~5,400 years ago.",
+ "french revolution": "The French Revolution (1789-1799) overthrew the monarchy, proclaimed the Declaration of the Rights of Man, descended into the Reign of Terror, and ended with Napoleon Bonaparte's coup — spreading ideals of liberty, equality and fraternity across Europe.",
+ "printing press": "Johannes Gutenberg's movable-type printing press (around 1440, Germany) made books cheap and plentiful, fuelling the Renaissance, Reformation and Scientific Revolution. It is ranked among history's most influential inventions.",
+ "telephone": "The telephone, patented by Alexander Graham Bell in 1876, transmits voice electrically. It evolved from switchboards to mobile phones to today's smartphones, which are pocket computers with cameras, GPS and internet.",
+ "airplane": "The Wright brothers achieved the first powered, controlled airplane flight on 17 December 1903 at Kitty Hawk, USA (12 seconds, 36.5 m). Aviation then shrank the world within decades, from propeller planes to jets and wide-body airliners.",
+ "moon landing": "Apollo 11 landed on the Moon on 20 July 1969; Neil Armstrong and Buzz Aldrin walked on the surface while Michael Collins orbited. In total 12 astronauts walked on the Moon (1969-1972); no human has returned since Apollo 17.",
+ "mars missions": "Robotic missions to Mars include NASA's rovers (Sojourner 1997, Spirit/Opportunity 2004, Curiosity 2012, Perseverance 2021) and India's Mangalyaan (2014, first Asian Mars orbiter, succeeded on its first attempt). Human missions are planned for the 2030s+.",
+ "isro": "ISRO (Indian Space Research Organisation, founded 1969) is India's space agency, known for cost-effective missions: Chandrayaan lunar orbiters/landers (Chandrayaan-3 landed near the lunar south pole in 2023, a world first) and Mangalyaan to Mars (2014).",
+ "stock market india": "India's main stock exchanges are the BSE (Bombay Stock Exchange, est. 1875, Asia's oldest) and NSE (National Stock Exchange). Benchmark indices are the Sensex (30 BSE stocks) and Nifty 50 (50 NSE stocks); regulator is SEBI.",
+ "income tax india": "In India, income tax is levied by the central government under the Income-tax Act, with annual slabs for individuals; GST (Goods and Services Tax, launched 1 July 2017) unified indirect taxes across states. The financial year runs April to March.",
+ "school exams india": "India's major school boards include CBSE and ICSE plus state boards. Class 10 and 12 board exams are key milestones; competitive exams include JEE (engineering), NEET (medical) and UPSC civil services among the world's toughest by applicants.",
+ "yoga": "Yoga is an ancient Indian system of physical, mental and spiritual practice, systematised in Patanjali's Yoga Sutras (~2,000 years ago). Modern yoga emphasises asanas (postures), breathing (pranayama) and meditation; the UN marks International Yoga Day on 21 June.",
+ "chess": "Chess is a two-player strategy board game evolved from Indian chaturanga (~6th century). The world championship dates to 1886; India's Viswanathan Anand was a five-time world champion, and India won double gold at the 2024 Chess Olympiad.",
+ "tennis": "Tennis is a racket sport played on grass, clay or hard courts. The four Grand Slams are the Australian Open, French Open (Roland-Garros), Wimbledon (oldest, 1877) and US Open. Novak Djokovic holds the men's record of 24 Slam singles titles; Serena Williams won 23.",
+ "badminton": "Badminton is a fast racket sport using a shuttlecock; top nations include China, Indonesia, India, Denmark and Japan. Indian stars include P.V. Sindhu (two Olympic medals) and Saina Nehwal. The BWF World Championships are the top annual event after the Olympics.",
+ "hockey india": "Field hockey is historically India's most successful Olympic team sport: 8 gold medals (1928-1980). The men's team won bronze at Tokyo 2020 and Paris 2024, ending a long medal drought. Major Dhyan Chand, the 'Wizard', is its greatest legend.",
+})
 
 if __name__ == "__main__":
     docs = build_world_corpus()

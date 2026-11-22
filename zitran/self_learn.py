@@ -83,6 +83,16 @@ def generate_self_teaching(seed=3):
         t = topic.title()
         docs.append(f"Q: Explain {topic}.\nA: {text}")
         docs.append(f"Question: What should I know about {topic}?\nAnswer: {text}")
+    try:
+        from zitran.world_data import INDIA_STATES, US_STATES, PLANETS, load_trivia
+        for st_name, cap in list(INDIA_STATES.items()) + list(US_STATES.items()):
+            docs.append(f"Q: What is the capital of {st_name}?\nA: The capital of {st_name} is {cap}.")
+        for name, desc in PLANETS:
+            docs.append(f"Q: Tell me about the planet {name}.\nA: {name} is {desc}.")
+        for it in rnd.sample(load_trivia(), min(4000, len(load_trivia()))):
+            docs.append(f"Q: {it['q']}\nA: {it['a']}")
+    except Exception:
+        pass
     # cyber knowledge (verified, defensive)
     try:
         from zitran.assistant import KNOWLEDGE

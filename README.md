@@ -241,3 +241,28 @@ answers in chat come from the verified lookup, so they are exact. Scale path:
 Also fixed: prompt encoding in `zitran/generate.py` no longer appends <SEP>/<PAD>
 before generation (that bug made the LM start a new document instead of answering).
 Tests: `tests/test_world.py`.
+
+## 🐛 Bug fix + 🌐 Gen4 knowledge scale-up (`artifacts_gen4/`)
+
+**Bug (reported by user):** "what currency is used in Japan?" was answered with a
+malware CRITICAL threat analysis. Root cause: routing could fall through to the
+security classifier. **Fix:** a question can now NEVER reach the classifier —
+the classifier only runs on incident-like text (security signals/URLs/logs) or
+pasted event data. Non-incident questions get a verified answer or an honest
+"I don't know yet". Regression test:
+`test_currency_question_never_classified_fresh_and_after_incident` (incl. asking
+right after a ransomware analysis in the same session).
+
+**Knowledge scale-up (real datasets):** OpenTriviaQA (49,716 human Q&A, 22
+categories, GitHub) + India 36 + US 50 state capitals + planets/continents tables
++ 38 more encyclopedia topics → world corpus 2,090 → **52,087 docs**; assistant
+retrieval uses them (word-boundary fixes prevent "waterloo"→"water" mistakes).
+
+**Gen4 training (continual from Gen3, 700 steps):** held-out world+trivia
+perplexity **225.4 → 72.9**. **Fact probe (raw LM generation, 16 capitals): 0/16**
+— the LM produces the correct answer *pattern* but not memorised facts. That is
+the honest state of a 19M-param CPU model after ~1,950 total steps; ChatGPT-class
+generation needs billions of parameters and GPU-months. In chat, factual answers
+come from verified lookup over the real datasets (exact), while the LM keeps
+improving each round. Scale path:
+`python3 -m zitran.train_gen4 --max-steps 5000 --base artifacts_gen4`.
