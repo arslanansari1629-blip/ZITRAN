@@ -167,7 +167,7 @@ class Assistant:
                      "5) Compare: 'which model is best?'.\n"
                      "6) Automated: run `python3 tests/test_assistant.py` or `python3 -m zitran.test_responses`.\n"
                      "7) Try to trick me: paraphrase an attack in your own words, or paste something benign and check I say so.")
-        elif any(k in low for k in self.CASUAL) or re.search(r"\bi (feel|am) (sad|happy|angry|scared|afraid|stressed|lonely|bored|excited|worried|anxious)\b", low):
+        elif any(k in low for k in self.CASUAL) or re.search(r"\bi (feel|am)( really| very| so| quite| feeling)? (sad|happy|angry|scared|afraid|stressed|lonely|bored|excited|worried|anxious|good|great|fine|ok|okay|awesome|tired|depressed|down)\b", low) or (emo and emo.get("confidence", 0) >= 0.55 and emo.get("emotion") != "neutral" and not _incident_like(low) and len(msg) < 120 and not _question_like(low, msg) and not re.search(r"[0-9]", low)):
             e = (emo or {}).get("emotion", "neutral"); name = f", {s['name']}" if s.get("name") else ""
             openers = {
                 "sadness": f"I'm really sorry you're feeling this way{name}. 💙 You don't have to carry it alone — I'm here, and we can take things one small step at a time.",

@@ -48,11 +48,11 @@ def answer_conversation(q, threshold=0.30):
     # distinctive words are rare in the corpus (e.g. "photosynthesis"); a real
     # match must contain at least one, so generic phrasing can't hijack.
     distinctive = {w for w in words if len(idx.get(w, ())) <= max(50, len(pairs) // 100)}
-    cand = Counter()
-    for w in words:
-        for i in idx.get(w, ()): cand[i] += 1
+    seed_words = distinctive if distinctive else words
+    rarest = min(seed_words, key=lambda w: len(idx.get(w, ())))
     best, bs = None, 0.0
-    for i, inter in cand.items():
+    for i in idx.get(rarest, ()):
+        inter = len(words & doc_kw[i])
         if inter < 2: continue
         if distinctive and not (distinctive & doc_kw[i]): continue
         score = inter / math.sqrt(len(doc_kw[i]) * len(words))

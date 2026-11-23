@@ -18,3 +18,5 @@ artifacts_gen6/*.pt
 artifacts_gen6/corpus_ids.npy
 artifacts_gen7/*.pt
 artifacts_gen7/corpus_ids.npy
+artifacts_gen8/*.pt
+artifacts_gen8/corpus_ids.npy

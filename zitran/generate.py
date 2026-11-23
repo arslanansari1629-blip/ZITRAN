@@ -10,7 +10,7 @@ from zitran.gen_model import ZitranGen
 def load_gen(artifacts=None):
     if artifacts is None:
         base = os.path.join(os.path.dirname(__file__), "..")
-        artifacts = next((c for c in ("artifacts_gen7", "artifacts_gen6", "artifacts_gen5", "artifacts_gen4", "artifacts_gen3", "artifacts_gen2", "artifacts_gen")
+        artifacts = next((c for c in ("artifacts_gen7", "artifacts_gen8", "artifacts_gen6", "artifacts_gen5", "artifacts_gen4", "artifacts_gen3", "artifacts_gen2", "artifacts_gen")
                           if os.path.exists(os.path.join(base, c, "config.json"))), "artifacts_gen")
     root = os.path.join(os.path.dirname(__file__), "..")
     cfg = json.load(open(os.path.join(root, artifacts, "config.json")))

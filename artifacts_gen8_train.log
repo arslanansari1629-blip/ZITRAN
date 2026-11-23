@@ -1,0 +1,73 @@
+[1/6] Building world + self-teaching + rehearsal corpora...
+'TLS/SSL connection has been closed (EOF) (_ssl.c:992)' thrown while requesting HEAD https://huggingface.co/datasets/teknium/OpenHermes-2.5/resolve/main/README.md
+Retrying in 1s [Retry 1/5].
+'TLS/SSL connection has been closed (EOF) (_ssl.c:992)' thrown while requesting HEAD https://huggingface.co/datasets/teknium/OpenHermes-2.5/resolve/main/README.md
+Retrying in 2s [Retry 2/5].
+'TLS/SSL connection has been closed (EOF) (_ssl.c:992)' thrown while requesting HEAD https://huggingface.co/datasets/teknium/OpenHermes-2.5/resolve/main/README.md
+Retrying in 4s [Retry 3/5].
+'TLS/SSL connection has been closed (EOF) (_ssl.c:992)' thrown while requesting HEAD https://huggingface.co/datasets/teknium/OpenHermes-2.5/resolve/main/README.md
+Retrying in 8s [Retry 4/5].
+'TLS/SSL connection has been closed (EOF) (_ssl.c:992)' thrown while requesting HEAD https://huggingface.co/datasets/teknium/OpenHermes-2.5/resolve/main/README.md
+Retrying in 8s [Retry 5/5].
+'TLS/SSL connection has been closed (EOF) (_ssl.c:992)' thrown while requesting HEAD https://huggingface.co/datasets/teknium/OpenHermes-2.5/resolve/main/README.md
+[instruction] OpenHermes via HF unavailable (ConnectionError); using GitHub-hosted Alpaca fallback
+'TLS/SSL connection has been closed (EOF) (_ssl.c:992)' thrown while requesting HEAD https://huggingface.co/datasets/anon8231489123/ShareGPT_Vicuna_unfiltered/resolve/main/README.md
+Retrying in 1s [Retry 1/5].
+'TLS/SSL connection has been closed (EOF) (_ssl.c:992)' thrown while requesting HEAD https://huggingface.co/datasets/anon8231489123/ShareGPT_Vicuna_unfiltered/resolve/main/README.md
+Retrying in 2s [Retry 2/5].
+'TLS/SSL connection has been closed (EOF) (_ssl.c:992)' thrown while requesting HEAD https://huggingface.co/datasets/anon8231489123/ShareGPT_Vicuna_unfiltered/resolve/main/README.md
+Retrying in 4s [Retry 3/5].
+'TLS/SSL connection has been closed (EOF) (_ssl.c:992)' thrown while requesting HEAD https://huggingface.co/datasets/anon8231489123/ShareGPT_Vicuna_unfiltered/resolve/main/README.md
+Retrying in 8s [Retry 4/5].
+'TLS/SSL connection has been closed (EOF) (_ssl.c:992)' thrown while requesting HEAD https://huggingface.co/datasets/anon8231489123/ShareGPT_Vicuna_unfiltered/resolve/main/README.md
+Retrying in 8s [Retry 5/5].
+'TLS/SSL connection has been closed (EOF) (_ssl.c:992)' thrown while requesting HEAD https://huggingface.co/datasets/anon8231489123/ShareGPT_Vicuna_unfiltered/resolve/main/README.md
+[sharegpt] HF unavailable (ConnectionError); using GitHub-mirror file
+      sharegpt=14000 (source: GitHub mirror of ShareGPT_V3_unfiltered_cleaned_split (85,817 filtered pairs))
+      lmsys=6959 (source: LMSYS-Chat-1M GitHub slices (6,959 filtered pairs))
+      world=20000 self_teaching=11500 rehearsal=5000 total_docs=57459 (instruction: Alpaca (GitHub fallback for OpenHermes))
+[2/6] Tokenizing (Gen2 BPE vocab)...
+      tokens=8.24M (58s)
+[3/6] Gen8-LARGE from scratch: 39,918,592 params (d=512 layers=12 heads=8 ff=2048). Measuring BEFORE (random init)...
+      world-knowledge perplexity BEFORE training (random): 4592.32
+      Gen7 (19.3M) perplexity on SAME test data: 70.77
+[4/6] Self-learning fine-tune (1000 steps x 16 x 80)...
+/home/user/ZITRAN/zitran/train_gen8.py:101: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  opt.step(); sched.step(); step += 1; losses.append(float(loss))
+      step 50 loss 7.522 (180s)
+      step 100 loss 6.577 (296s)
+      step 150 loss 6.301 (412s)
+      step 200 loss 5.945 (524s)
+      step 250 loss 5.713 (635s)
+      step 300 loss 5.626 (747s)
+      step 350 loss 5.500 (858s)
+      step 400 loss 5.405 (971s)
+      step 450 loss 5.330 (1083s)
+      step 500 loss 5.291 (1195s)
+      step 550 loss 5.230 (1309s)
+      step 600 loss 5.167 (1419s)
+      step 650 loss 5.092 (1528s)
+      step 700 loss 5.077 (1642s)
+      step 750 loss 5.046 (1757s)
+      step 800 loss 4.960 (1870s)
+      step 850 loss 4.955 (1982s)
+      step 900 loss 4.932 (2094s)
+      step 950 loss 4.971 (2214s)
+      step 1000 loss 4.981 (2337s)
+[5/6] Measuring AFTER + generating samples...
+      world-knowledge perplexity AFTER self-learning: 155.48
+      FACT PROBE after training: 0/16 capitals generated correctly
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/user/ZITRAN/zitran/train_gen8.py", line 129, in <module>
+    main()
+  File "/home/user/ZITRAN/zitran/train_gen8.py", line 125, in main
+    print("[6/6] Saved", a.out, json.dumps({k: metrics[k] for k in ("world_perplexity_before", "world_perplexity_after", "steps", "docs")}))
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/ZITRAN/zitran/train_gen8.py", line 125, in <dictcomp>
+    print("[6/6] Saved", a.out, json.dumps({k: metrics[k] for k in ("world_perplexity_before", "world_perplexity_after", "steps", "docs")}))
+                                               ~~~~~~~^^^
+KeyError: 'world_perplexity_before'
+EXIT=1

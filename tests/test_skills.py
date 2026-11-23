@@ -38,7 +38,15 @@ def test_currency_question_never_classified_fresh_and_after_incident():
     r4 = assistant_reply("who won the battle of waterloo?", "ensemble", "bug-fresh")
     assert "predicted_class" not in r4, r4["reply"][:200]  # question -> never classified
 
+
+def test_happy_message_never_classified():
+    r = assistant_reply("i am very happy today!", "ensemble", "happy-test")
+    assert "predicted_class" not in r, r["reply"][:200]
+    r2 = assistant_reply("i feel really sad and lonely", "ensemble", "happy-test")
+    assert "predicted_class" not in r2, r2["reply"][:200]
+
 if __name__ == "__main__":
     test_who_is_ronaldo(); test_capital_and_math_still_work(); test_who_is_phishing_still_works()
-    test_build_html_page(); test_unknown_person_honest(); test_currency_question_never_classified_fresh_and_after_incident(); print("SKILLS TESTS PASSED")
+    test_build_html_page(); test_unknown_person_honest(); test_currency_question_never_classified_fresh_and_after_incident(); test_happy_message_never_classified(); print("SKILLS TESTS PASSED")
+
 

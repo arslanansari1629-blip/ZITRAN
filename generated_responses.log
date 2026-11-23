@@ -1,0 +1,14 @@
+prompt pool bana raha hoon...
+pool size: 331,497 unique prompts | generating 100,000 responses...
+  10,000/100,000 done | 67s | 150.2 resp/s | ETA 599s
+  20,000/100,000 done | 125s | 160.5 resp/s | ETA 498s
+  30,000/100,000 done | 192s | 156.1 resp/s | ETA 448s
+  40,000/100,000 done | 257s | 155.4 resp/s | ETA 386s
+  50,000/100,000 done | 318s | 157.1 resp/s | ETA 318s
+  60,000/100,000 done | 386s | 155.6 resp/s | ETA 257s
+  70,000/100,000 done | 449s | 155.8 resp/s | ETA 193s
+  80,000/100,000 done | 511s | 156.6 resp/s | ETA 128s
+  90,000/100,000 done | 573s | 157.1 resp/s | ETA 64s
+  100,000/100,000 done | 635s | 157.5 resp/s | ETA 0s
+DONE: 100,000 responses -> data/generated_responses.jsonl.gz (11.1 MB) in 635s
+EXIT=0

@@ -318,3 +318,27 @@ retrieves answers from the ~63k indexed ShareGPT+LMSYS conversation pairs
 under verified facts — so open questions like "what are the benefits of regular
 exercise?" or "tell me a joke" get full, natural, real-model responses in chat,
 while factual questions still resolve to the verified 264k-fact bank first.
+
+## 📈 Gen8-LARGE: parameter scale-up (`artifacts_gen8/`) + universal_responder.py
+
+**Parameters badha diye:** Gen7 19,312,128 (d384, 10 layers, 6 heads, ff1536) →
+**Gen8-Large 39,918,592 (d512, 12 layers, 8 heads, ff2048)** — 2.07× bigger,
+trained FROM SCRATCH on the full 57,459-doc / 8.24M-token corpus (1000 steps,
+batch 16; two OOM kills en route at batch 24 / with the chat server running —
+3 GB RAM is the ceiling). Result: perplexity 4592 (random) → **155.5**, loss
+still falling (4.93). Gen7 scores **70.8** on the same held-out data because it
+has ~4,650 cumulative fine-tune steps — the bigger model needs more steps to
+overtake, as expected; `/api/generate` therefore still prefers Gen7, Gen8 is
+loadable via `load_gen("artifacts_gen8")`. Continue:
+`python3 -m zitran.train_gen8 --max-steps 4000` (or fine-tune Gen8 further).
+
+**universal_responder.py** (repo root, as scripted by the user):
+- `python3 universal_responder.py --test` — 37-message test suite across every
+  category with route + timing (it caught and we fixed: "i am very happy
+  today!" being classified as phishing — emotion phrases now route to chat).
+- `python3 universal_responder.py` — interactive terminal chat.
+- `python3 universal_responder.py --gen 100000` — **1 lakh responses generated**:
+  100,000 responses in 635 s (~157/s after rarest-word retrieval optimisation)
+  from a 331,497-prompt pool (all countries/states/elements, 264k fact-bank
+  questions, 63k conversation prompts, math, security) → 
+  `data/generated_responses.jsonl.gz` (11.1 MB, 0 empty responses).

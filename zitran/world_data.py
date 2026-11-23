@@ -11,7 +11,10 @@ import json, os, random, re
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 WORLD = os.path.join(ROOT, "data", "world")  # committed copy of the GitHub datasets (raw cache in data/raw/world also works)
 
+_countries_cache = None
 def load_countries():
+    global _countries_cache
+    if _countries_cache is not None: return _countries_cache
     p = os.path.join(WORLD, "countries.json")
     if not os.path.exists(p): return []
     out = []
@@ -28,12 +31,17 @@ def load_countries():
             })
         except Exception:
             continue
-    return [c for c in out if c["name"]]
+    _countries_cache = [c for c in out if c["name"]]
+    return _countries_cache
 
+_elements_cache = None
 def load_elements():
+    global _elements_cache
+    if _elements_cache is not None: return _elements_cache
     p = os.path.join(WORLD, "elements.json")
     if not os.path.exists(p): return []
-    return json.load(open(p)).get("elements", [])
+    _elements_cache = json.load(open(p)).get("elements", [])
+    return _elements_cache
 
 # Expanded curated encyclopedia: science, space, history, geography, sports,
 # technology, nature, human body. (key -> factual paragraph)
@@ -350,13 +358,12 @@ def answer_qa_bank(q):
     words = set(_kw(q))
     if len(words) < 2: return None
     idx, doc_kw = _qa_index()
-    from collections import Counter
-    cand = Counter()
-    for w in words:
-        for i in idx.get(w, ()): cand[i] += 1
-    if not cand: return None
+    rarest = min(words, key=lambda w: len(idx.get(w, ())))
+    cand_ids = idx.get(rarest, ())
+    if not cand_ids: return None
     bank = load_qa_bank(); best, bs = None, 0.0
-    for i, inter in cand.most_common(60):
+    for i in cand_ids:
+        inter = len(words & doc_kw[i])
         if inter < 3: continue
         score = inter / max(1, len(doc_kw[i]))
         if score > bs: best, bs = bank[i], score
