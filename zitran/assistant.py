@@ -98,9 +98,10 @@ class Assistant:
             extra["session_mood"] = max(set(s["emotions"]), key=s["emotions"].count) if s["emotions"] else None
 
         gen_ans = None
-        q_like = re.match(r"\s*(who|what|which|where|when|tell me|name the|give me|is|are|do|does)\b", low) or "capital of" in low or msg.rstrip().endswith("?")
+        q_like = re.match(r"\s*(who|what|which|where|when|tell me|name the|give me|is|are|do|does)\b", low) or "capital of" in low or msg.rstrip().endswith("?") or re.match(r"\s*(explain|describe|define|tell me)\b", low)
         followup = bool(s["last"]) and any(k in low for k in ["why", "what should i do", "tell me more", "more detail", "mitre", "fix", "solution"])
-        if q_like and not followup and not re.search(r"\d+\s*[-+*/]", low) and not any(k in low for k in OFFENSIVE + ["help", "what can you do", "capabilit", "how to test"]):
+        logic_like = bool(re.match(r"\s*(true|false|not|\()", low) or re.search(r"\b(true|false)\b\s+(and|or)\b|\b(and|or)\s+(not\s+)?(true|false)\b", low))
+        if q_like and not followup and not logic_like and not re.search(r"\d+\s*[-+*/]", low) and not any(k in low for k in OFFENSIVE + ["help", "what can you do", "capabilit", "how to test"]):
             try:
                 from zitran.general_kb import answer_general
                 gen_ans = answer_general(msg)

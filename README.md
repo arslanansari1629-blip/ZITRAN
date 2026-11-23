@@ -300,3 +300,21 @@ intent blocklist, English/length/quality checks): **85,817 human→GPT pairs kep
 75.9 → 75.5 while absorbing conversational data; generations show early
 conversational structure ("here is a list of…", list formatting) but remain
 incoherent at this scale. Tests: `tests/test_sharegpt.py`.
+
+## 🗣️ LMSYS-Chat-1M + Gen7 + conversational layer (`artifacts_gen7/`)
+
+Requested `lmsys/lmsys-chat-1m` (1M real conversations; gated HF dataset,
+attempted first — unreachable here). Trained on real slices of that exact
+dataset from GitHub (7,116 conversations: 10k JSONL slice + 5k English parquet
+sample with OpenAI moderation annotations). Safety: English only, every
+moderation-flagged conversation dropped, harmful-intent blocklist → **6,959
+pairs** (`data/lmsys_docs.jsonl.gz`, `zitran/lmsys_data.py`). Gen7 (900 steps,
+57,424 docs, **8.24M tokens**): perplexity **75.5 → 70.8**, best yet. Raw-LM
+free generation is still incoherent at 19M params (fact probe 0/16, honest).
+
+**Conversational layer** (`zitran/conversation_kb.py`): the assistant now also
+retrieves answers from the ~63k indexed ShareGPT+LMSYS conversation pairs
+(cosine match + distinctive-word requirement, strong matches only), layered
+under verified facts — so open questions like "what are the benefits of regular
+exercise?" or "tell me a joke" get full, natural, real-model responses in chat,
+while factual questions still resolve to the verified 264k-fact bank first.

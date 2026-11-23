@@ -68,6 +68,13 @@ def answer_general(question):
             return val
     if FACTS.get("cristiano ronaldo") is None and "cristiano" in low:
         return FACTS["ronaldo"]
+    # conversational retrieval over ShareGPT+LMSYS real conversations (strong matches only)
+    try:
+        from zitran.conversation_kb import answer_conversation
+        conv = answer_conversation(question)
+        if conv: return conv
+    except Exception:
+        pass
     # retrieval over Alpaca instruction answers
     words = set(_words(low))
     if len(words) >= 2:
