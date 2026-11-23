@@ -1,0 +1,682 @@
+{
+  "summary_accuracy": {
+    "v1": 0.643,
+    "v2": 0.357,
+    "v3": 0.714,
+    "ENSEMBLE": 0.786
+  },
+  "cases": [
+    {
+      "input": "employee opened attachment and pc started encrypting files asking crypto payment shadow copies gone",
+      "expected": "ransomware",
+      "responses": {
+        "v1": {
+          "said": "intrusion_dos",
+          "confidence": 0.2967,
+          "risk": "HIGH",
+          "correct": false
+        },
+        "v2": {
+          "said": "exfiltration",
+          "confidence": 0.3614,
+          "risk": "CRITICAL",
+          "correct": false
+        },
+        "v3": {
+          "said": "exfiltration",
+          "confidence": 0.3819,
+          "risk": "CRITICAL",
+          "correct": false
+        },
+        "ENSEMBLE": {
+          "said": "exfiltration",
+          "confidence": 0.2455,
+          "risk": "CRITICAL",
+          "correct": false,
+          "votes": {
+            "artifacts": {
+              "class": "intrusion_dos",
+              "confidence": 0.2967,
+              "weight": 0.34
+            },
+            "artifacts_v2": {
+              "class": "exfiltration",
+              "confidence": 0.3614,
+              "weight": 0.328
+            },
+            "artifacts_v3": {
+              "class": "exfiltration",
+              "confidence": 0.3819,
+              "weight": 0.332
+            }
+          }
+        }
+      },
+      "threat_flag_correct": true
+    },
+    {
+      "input": "someone tried thousands of passwords against vpn account of finance manager",
+      "expected": "credential_attack",
+      "responses": {
+        "v1": {
+          "said": "credential_attack",
+          "confidence": 0.9787,
+          "risk": "HIGH",
+          "correct": true
+        },
+        "v2": {
+          "said": "credential_attack",
+          "confidence": 0.4489,
+          "risk": "HIGH",
+          "correct": true
+        },
+        "v3": {
+          "said": "credential_attack",
+          "confidence": 0.9068,
+          "risk": "HIGH",
+          "correct": true
+        },
+        "ENSEMBLE": {
+          "said": "credential_attack",
+          "confidence": 0.781,
+          "risk": "HIGH",
+          "correct": true,
+          "votes": {
+            "artifacts": {
+              "class": "credential_attack",
+              "confidence": 0.9787,
+              "weight": 0.34
+            },
+            "artifacts_v2": {
+              "class": "credential_attack",
+              "confidence": 0.4489,
+              "weight": 0.328
+            },
+            "artifacts_v3": {
+              "class": "credential_attack",
+              "confidence": 0.9068,
+              "weight": 0.332
+            }
+          }
+        }
+      },
+      "threat_flag_correct": true
+    },
+    {
+      "input": "fake email pretending microsoft asking to re-enter login password on strange site",
+      "expected": "phishing",
+      "responses": {
+        "v1": {
+          "said": "phishing",
+          "confidence": 0.96,
+          "risk": "HIGH",
+          "correct": true
+        },
+        "v2": {
+          "said": "credential_attack",
+          "confidence": 0.553,
+          "risk": "HIGH",
+          "correct": false
+        },
+        "v3": {
+          "said": "phishing",
+          "confidence": 0.9808,
+          "risk": "HIGH",
+          "correct": true
+        },
+        "ENSEMBLE": {
+          "said": "phishing",
+          "confidence": 0.6582,
+          "risk": "HIGH",
+          "correct": true,
+          "votes": {
+            "artifacts": {
+              "class": "phishing",
+              "confidence": 0.96,
+              "weight": 0.34
+            },
+            "artifacts_v2": {
+              "class": "credential_attack",
+              "confidence": 0.553,
+              "weight": 0.328
+            },
+            "artifacts_v3": {
+              "class": "phishing",
+              "confidence": 0.9808,
+              "weight": 0.332
+            }
+          }
+        }
+      },
+      "threat_flag_correct": true
+    },
+    {
+      "input": "url https://secure-login-verify.top/account/update",
+      "expected": "phishing",
+      "responses": {
+        "v1": {
+          "said": "benign",
+          "confidence": 1.0,
+          "risk": "NONE",
+          "correct": false
+        },
+        "v2": {
+          "said": "phishing",
+          "confidence": 0.9826,
+          "risk": "HIGH",
+          "correct": true
+        },
+        "v3": {
+          "said": "phishing",
+          "confidence": 0.9859,
+          "risk": "HIGH",
+          "correct": true
+        },
+        "ENSEMBLE": {
+          "said": "phishing",
+          "confidence": 0.6497,
+          "risk": "HIGH",
+          "correct": true,
+          "votes": {
+            "artifacts": {
+              "class": "benign",
+              "confidence": 1.0,
+              "weight": 0.34
+            },
+            "artifacts_v2": {
+              "class": "phishing",
+              "confidence": 0.9826,
+              "weight": 0.328
+            },
+            "artifacts_v3": {
+              "class": "phishing",
+              "confidence": 0.9859,
+              "weight": 0.332
+            }
+          }
+        }
+      },
+      "threat_flag_correct": false
+    },
+    {
+      "input": "normal user completed mfa login and opened dashboard without issues",
+      "expected": "benign",
+      "responses": {
+        "v1": {
+          "said": "benign",
+          "confidence": 0.9014,
+          "risk": "NONE",
+          "correct": true
+        },
+        "v2": {
+          "said": "credential_attack",
+          "confidence": 0.7022,
+          "risk": "HIGH",
+          "correct": false
+        },
+        "v3": {
+          "said": "credential_attack",
+          "confidence": 0.7175,
+          "risk": "HIGH",
+          "correct": false
+        },
+        "ENSEMBLE": {
+          "said": "credential_attack",
+          "confidence": 0.4873,
+          "risk": "HIGH",
+          "correct": false,
+          "votes": {
+            "artifacts": {
+              "class": "benign",
+              "confidence": 0.9014,
+              "weight": 0.34
+            },
+            "artifacts_v2": {
+              "class": "credential_attack",
+              "confidence": 0.7022,
+              "weight": 0.328
+            },
+            "artifacts_v3": {
+              "class": "credential_attack",
+              "confidence": 0.7175,
+              "weight": 0.332
+            }
+          }
+        }
+      },
+      "threat_flag_correct": false
+    },
+    {
+      "input": "massive traffic flood from thousands of bots website down denial of service",
+      "expected": "intrusion_dos",
+      "responses": {
+        "v1": {
+          "said": "intrusion_dos",
+          "confidence": 0.9653,
+          "risk": "HIGH",
+          "correct": true
+        },
+        "v2": {
+          "said": "exfiltration",
+          "confidence": 0.4909,
+          "risk": "CRITICAL",
+          "correct": false
+        },
+        "v3": {
+          "said": "intrusion_dos",
+          "confidence": 0.9906,
+          "risk": "HIGH",
+          "correct": true
+        },
+        "ENSEMBLE": {
+          "said": "intrusion_dos",
+          "confidence": 0.6591,
+          "risk": "HIGH",
+          "correct": true,
+          "votes": {
+            "artifacts": {
+              "class": "intrusion_dos",
+              "confidence": 0.9653,
+              "weight": 0.34
+            },
+            "artifacts_v2": {
+              "class": "exfiltration",
+              "confidence": 0.4909,
+              "weight": 0.328
+            },
+            "artifacts_v3": {
+              "class": "intrusion_dos",
+              "confidence": 0.9906,
+              "weight": 0.332
+            }
+          }
+        }
+      },
+      "threat_flag_correct": true
+    },
+    {
+      "input": "outgoing traffic sending gigabytes of database to unknown foreign server at night",
+      "expected": "exfiltration",
+      "responses": {
+        "v1": {
+          "said": "malware",
+          "confidence": 0.3887,
+          "risk": "CRITICAL",
+          "correct": false
+        },
+        "v2": {
+          "said": "exfiltration",
+          "confidence": 0.8347,
+          "risk": "CRITICAL",
+          "correct": true
+        },
+        "v3": {
+          "said": "exfiltration",
+          "confidence": 0.9389,
+          "risk": "CRITICAL",
+          "correct": true
+        },
+        "ENSEMBLE": {
+          "said": "exfiltration",
+          "confidence": 0.5893,
+          "risk": "CRITICAL",
+          "correct": true,
+          "votes": {
+            "artifacts": {
+              "class": "malware",
+              "confidence": 0.3887,
+              "weight": 0.34
+            },
+            "artifacts_v2": {
+              "class": "exfiltration",
+              "confidence": 0.8347,
+              "weight": 0.328
+            },
+            "artifacts_v3": {
+              "class": "exfiltration",
+              "confidence": 0.9389,
+              "weight": 0.332
+            }
+          }
+        }
+      },
+      "threat_flag_correct": true
+    },
+    {
+      "input": "unknown program keeps contacting random generated domains every minute infected machine",
+      "expected": "command_control",
+      "responses": {
+        "v1": {
+          "said": "command_control",
+          "confidence": 0.921,
+          "risk": "CRITICAL",
+          "correct": true
+        },
+        "v2": {
+          "said": "exploit_injection",
+          "confidence": 0.3155,
+          "risk": "CRITICAL",
+          "correct": false
+        },
+        "v3": {
+          "said": "command_control",
+          "confidence": 0.8127,
+          "risk": "CRITICAL",
+          "correct": true
+        },
+        "ENSEMBLE": {
+          "said": "command_control",
+          "confidence": 0.5916,
+          "risk": "CRITICAL",
+          "correct": true,
+          "votes": {
+            "artifacts": {
+              "class": "command_control",
+              "confidence": 0.921,
+              "weight": 0.34
+            },
+            "artifacts_v2": {
+              "class": "exploit_injection",
+              "confidence": 0.3155,
+              "weight": 0.328
+            },
+            "artifacts_v3": {
+              "class": "command_control",
+              "confidence": 0.8127,
+              "weight": 0.332
+            }
+          }
+        }
+      },
+      "threat_flag_correct": true
+    },
+    {
+      "input": "input field contains union select query trying to dump user passwords table",
+      "expected": "exploit_injection",
+      "responses": {
+        "v1": {
+          "said": "exfiltration",
+          "confidence": 0.5835,
+          "risk": "CRITICAL",
+          "correct": false
+        },
+        "v2": {
+          "said": "exfiltration",
+          "confidence": 0.7305,
+          "risk": "CRITICAL",
+          "correct": false
+        },
+        "v3": {
+          "said": "exfiltration",
+          "confidence": 0.919,
+          "risk": "CRITICAL",
+          "correct": false
+        },
+        "ENSEMBLE": {
+          "said": "exfiltration",
+          "confidence": 0.7431,
+          "risk": "CRITICAL",
+          "correct": false,
+          "votes": {
+            "artifacts": {
+              "class": "exfiltration",
+              "confidence": 0.5835,
+              "weight": 0.34
+            },
+            "artifacts_v2": {
+              "class": "exfiltration",
+              "confidence": 0.7305,
+              "weight": 0.328
+            },
+            "artifacts_v3": {
+              "class": "exfiltration",
+              "confidence": 0.919,
+              "weight": 0.332
+            }
+          }
+        }
+      },
+      "threat_flag_correct": true
+    },
+    {
+      "input": "attacker probing all open ports and services of our firewall from external address",
+      "expected": "recon_scan",
+      "responses": {
+        "v1": {
+          "said": "recon_scan",
+          "confidence": 0.9159,
+          "risk": "MEDIUM",
+          "correct": true
+        },
+        "v2": {
+          "said": "exfiltration",
+          "confidence": 0.4569,
+          "risk": "CRITICAL",
+          "correct": false
+        },
+        "v3": {
+          "said": "exfiltration",
+          "confidence": 0.4709,
+          "risk": "CRITICAL",
+          "correct": false
+        },
+        "ENSEMBLE": {
+          "said": "recon_scan",
+          "confidence": 0.3228,
+          "risk": "MEDIUM",
+          "correct": true,
+          "votes": {
+            "artifacts": {
+              "class": "recon_scan",
+              "confidence": 0.9159,
+              "weight": 0.34
+            },
+            "artifacts_v2": {
+              "class": "exfiltration",
+              "confidence": 0.4569,
+              "weight": 0.328
+            },
+            "artifacts_v3": {
+              "class": "exfiltration",
+              "confidence": 0.4709,
+              "weight": 0.332
+            }
+          }
+        }
+      },
+      "threat_flag_correct": true
+    },
+    {
+      "input": "network flow dur zero proto tcp svc http flag SF sbytes b6 dbytes b7 land zero count b4 srvcount b4",
+      "expected": "benign",
+      "responses": {
+        "v1": {
+          "said": "credential_attack",
+          "confidence": 0.5193,
+          "risk": "HIGH",
+          "correct": false
+        },
+        "v2": {
+          "said": "benign",
+          "confidence": 0.9804,
+          "risk": "NONE",
+          "correct": true
+        },
+        "v3": {
+          "said": "benign",
+          "confidence": 0.8139,
+          "risk": "NONE",
+          "correct": true
+        },
+        "ENSEMBLE": {
+          "said": "benign",
+          "confidence": 0.7092,
+          "risk": "NONE",
+          "correct": true,
+          "votes": {
+            "artifacts": {
+              "class": "credential_attack",
+              "confidence": 0.5193,
+              "weight": 0.34
+            },
+            "artifacts_v2": {
+              "class": "benign",
+              "confidence": 0.9804,
+              "weight": 0.328
+            },
+            "artifacts_v3": {
+              "class": "benign",
+              "confidence": 0.8139,
+              "weight": 0.332
+            }
+          }
+        }
+      },
+      "threat_flag_correct": false
+    },
+    {
+      "input": "email subject: urgent verify your bank account click link enter card details immediately",
+      "expected": "phishing",
+      "responses": {
+        "v1": {
+          "said": "phishing",
+          "confidence": 1.0,
+          "risk": "HIGH",
+          "correct": true
+        },
+        "v2": {
+          "said": "phishing",
+          "confidence": 0.9677,
+          "risk": "HIGH",
+          "correct": true
+        },
+        "v3": {
+          "said": "phishing",
+          "confidence": 0.9981,
+          "risk": "HIGH",
+          "correct": true
+        },
+        "ENSEMBLE": {
+          "said": "phishing",
+          "confidence": 0.9888,
+          "risk": "HIGH",
+          "correct": true,
+          "votes": {
+            "artifacts": {
+              "class": "phishing",
+              "confidence": 1.0,
+              "weight": 0.34
+            },
+            "artifacts_v2": {
+              "class": "phishing",
+              "confidence": 0.9677,
+              "weight": 0.328
+            },
+            "artifacts_v3": {
+              "class": "phishing",
+              "confidence": 0.9981,
+              "weight": 0.332
+            }
+          }
+        }
+      },
+      "threat_flag_correct": true
+    },
+    {
+      "input": "scheduled backup completed successfully files stored status ok no threats found",
+      "expected": "benign",
+      "responses": {
+        "v1": {
+          "said": "benign",
+          "confidence": 1.0,
+          "risk": "NONE",
+          "correct": true
+        },
+        "v2": {
+          "said": "credential_attack",
+          "confidence": 0.3962,
+          "risk": "HIGH",
+          "correct": false
+        },
+        "v3": {
+          "said": "benign",
+          "confidence": 0.9987,
+          "risk": "NONE",
+          "correct": true
+        },
+        "ENSEMBLE": {
+          "said": "benign",
+          "confidence": 0.6787,
+          "risk": "NONE",
+          "correct": true,
+          "votes": {
+            "artifacts": {
+              "class": "benign",
+              "confidence": 1.0,
+              "weight": 0.34
+            },
+            "artifacts_v2": {
+              "class": "credential_attack",
+              "confidence": 0.3962,
+              "weight": 0.328
+            },
+            "artifacts_v3": {
+              "class": "benign",
+              "confidence": 0.9987,
+              "weight": 0.332
+            }
+          }
+        }
+      },
+      "threat_flag_correct": false
+    },
+    {
+      "input": "trojan binary quarantined after injecting code into system process memory hidden",
+      "expected": "malware",
+      "responses": {
+        "v1": {
+          "said": "malware",
+          "confidence": 1.0,
+          "risk": "CRITICAL",
+          "correct": true
+        },
+        "v2": {
+          "said": "credential_attack",
+          "confidence": 0.4272,
+          "risk": "HIGH",
+          "correct": false
+        },
+        "v3": {
+          "said": "malware",
+          "confidence": 0.9932,
+          "risk": "CRITICAL",
+          "correct": true
+        },
+        "ENSEMBLE": {
+          "said": "malware",
+          "confidence": 0.674,
+          "risk": "CRITICAL",
+          "correct": true,
+          "votes": {
+            "artifacts": {
+              "class": "malware",
+              "confidence": 1.0,
+              "weight": 0.34
+            },
+            "artifacts_v2": {
+              "class": "credential_attack",
+              "confidence": 0.4272,
+              "weight": 0.328
+            },
+            "artifacts_v3": {
+              "class": "malware",
+              "confidence": 0.9932,
+              "weight": 0.332
+            }
+          }
+        }
+      },
+      "threat_flag_correct": true
+    }
+  ]
+}

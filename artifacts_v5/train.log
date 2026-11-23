@@ -1,0 +1,55 @@
+[1/6] Assembling ALL data sources...
+      total_pool=109264 by_source={'enron-spam': 4879, 'malicious-urls': 9918, 'synthetic': 4162, 'jpcert-phishurl': 4996, 'nsl-kdd': 6473, 'ctu13': 2698, 'unsw-nb15': 21876, 'synthetic-text': 22000, 'synthetic-augmented': 22000, 'attack-dataset': 5131, 'attack-dataset-event': 5131}
+[2/6] Encoding with v4 tokenizer (truncate 48)...
+      X=(109264, 32) (156s)
+[3/6] Building 50M model (train=17000 val=3000)...
+      params=49,619,980
+[4/6] Training (budget 600 steps x batch 24)...
+/home/user/ZITRAN/zitran/train_v5.py:96: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  if step % 20 == 0: print(f"      step {step}/{a.max_steps} loss={float(loss):.3f} ({time.time()-t0:.0f}s)", flush=True)
+      step 20/600 loss=2.359 (205s)
+      step 40/600 loss=2.318 (253s)
+      step 60/600 loss=1.971 (297s)
+      step 80/600 loss=1.956 (339s)
+      step 100/600 loss=2.351 (382s)
+      [eval] {'step': 100, 'loss': 2.3506, 'val_acc_subset': 0.28, 'val_binary_subset': 0.75}
+      step 120/600 loss=1.485 (449s)
+      step 140/600 loss=1.909 (500s)
+      step 160/600 loss=1.835 (547s)
+      step 180/600 loss=1.446 (594s)
+      step 200/600 loss=1.589 (646s)
+      [eval] {'step': 200, 'loss': 1.5889, 'val_acc_subset': 0.4317, 'val_binary_subset': 0.715}
+      step 220/600 loss=1.333 (721s)
+      step 240/600 loss=1.619 (772s)
+      step 260/600 loss=1.836 (826s)
+      step 280/600 loss=1.142 (882s)
+      step 300/600 loss=1.669 (939s)
+      [eval] {'step': 300, 'loss': 1.6692, 'val_acc_subset': 0.5258, 'val_binary_subset': 0.68}
+      step 320/600 loss=1.169 (1022s)
+      step 340/600 loss=1.592 (1077s)
+      step 360/600 loss=1.735 (1132s)
+      step 380/600 loss=1.171 (1190s)
+      step 400/600 loss=0.973 (1251s)
+      [eval] {'step': 400, 'loss': 0.9726, 'val_acc_subset': 0.5767, 'val_binary_subset': 0.7567}
+      step 420/600 loss=1.021 (1340s)
+      step 440/600 loss=0.946 (1406s)
+      step 460/600 loss=0.978 (1463s)
+      step 480/600 loss=1.612 (1518s)
+      step 500/600 loss=0.968 (1571s)
+      [eval] {'step': 500, 'loss': 0.968, 'val_acc_subset': 0.6833, 'val_binary_subset': 0.7492}
+      step 520/600 loss=1.137 (1661s)
+      step 540/600 loss=0.655 (1723s)
+      step 560/600 loss=1.044 (1794s)
+      step 580/600 loss=1.100 (1864s)
+      step 600/600 loss=0.928 (1941s)
+      [eval] {'step': 600, 'loss': 0.9283, 'val_acc_subset': 0.6875, 'val_binary_subset': 0.77}
+[5/6] Final evaluation (val / attack heldout subset / official subset)...
+      val=0.7433 attack_sub=0.1922 official_sub=0.3101
+[6/6] Saving...
+{
+  "val": 0.7433,
+  "attack": 0.1922,
+  "official": 0.3101,
+  "params": 49619980
+}

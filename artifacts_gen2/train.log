@@ -1,0 +1,57 @@
+[1/5] Building corpus: cybersecurity (all sources) + general instruction...
+'TLS/SSL connection has been closed (EOF) (_ssl.c:992)' thrown while requesting HEAD https://huggingface.co/datasets/teknium/OpenHermes-2.5/resolve/main/README.md
+Retrying in 1s [Retry 1/5].
+'TLS/SSL connection has been closed (EOF) (_ssl.c:992)' thrown while requesting HEAD https://huggingface.co/datasets/teknium/OpenHermes-2.5/resolve/main/README.md
+Retrying in 2s [Retry 2/5].
+'TLS/SSL connection has been closed (EOF) (_ssl.c:992)' thrown while requesting HEAD https://huggingface.co/datasets/teknium/OpenHermes-2.5/resolve/main/README.md
+Retrying in 4s [Retry 3/5].
+'TLS/SSL connection has been closed (EOF) (_ssl.c:992)' thrown while requesting HEAD https://huggingface.co/datasets/teknium/OpenHermes-2.5/resolve/main/README.md
+Retrying in 8s [Retry 4/5].
+'TLS/SSL connection has been closed (EOF) (_ssl.c:992)' thrown while requesting HEAD https://huggingface.co/datasets/teknium/OpenHermes-2.5/resolve/main/README.md
+Retrying in 8s [Retry 5/5].
+'TLS/SSL connection has been closed (EOF) (_ssl.c:992)' thrown while requesting HEAD https://huggingface.co/datasets/teknium/OpenHermes-2.5/resolve/main/README.md
+[instruction] OpenHermes via HF unavailable (ConnectionError); using GitHub-hosted Alpaca fallback
+      docs=26000 (instruction source: Alpaca (GitHub fallback for OpenHermes))
+[2/5] Tokenizing with v4 BPE vocab...
+      tokens=2.48M train=2.36M test=0.12M (31s)
+[3/5] Building decoder-only Transformer...
+      params=19,312,128 d=384 layers=10 seq=80
+[4/5] Training (320 steps x batch 24 x seq 80)...
+/home/user/ZITRAN/zitran/train_gen2.py:61: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  if step % 25 == 0: print(f"      step {step}/{a.max_steps} loss={float(loss):.3f} train_ppl~{math.exp(min(float(loss),10)):.1f} ({time.time()-t0:.0f}s)", flush=True)
+      step 25/320 loss=7.050 train_ppl~1153.0 (133s)
+      step 50/320 loss=6.286 train_ppl~537.2 (217s)
+      step 75/320 loss=5.989 train_ppl~398.8 (294s)
+      step 100/320 loss=5.243 train_ppl~189.3 (373s)
+      step 125/320 loss=5.350 train_ppl~210.6 (450s)
+      step 150/320 loss=4.747 train_ppl~115.2 (531s)
+      [eval] {'step': 150, 'loss': 4.7467, 'test_ppl': 148.16}
+      step 175/320 loss=4.955 train_ppl~141.8 (612s)
+      step 200/320 loss=4.745 train_ppl~115.0 (688s)
+      step 225/320 loss=4.881 train_ppl~131.7 (763s)
+      step 250/320 loss=4.690 train_ppl~108.9 (828s)
+      step 275/320 loss=4.771 train_ppl~118.1 (898s)
+      step 300/320 loss=4.770 train_ppl~117.9 (963s)
+      [eval] {'step': 300, 'loss': 4.7701, 'test_ppl': 103.94}
+      [eval] {'step': 320, 'loss': 4.5091, 'test_ppl': 103.84}
+[5/5] Sample generations (verbatim) + save...
+--- PROMPT: Question: What is ransomware?
+Answer:
+    GEN:  - - act : re comm en ded respon se : in c id ent : security event is class i fied as exploit _ injection . 0 02 .
+--- PROMPT: Incident: mass file encryption files renamed locked ransom note bitcoin
+Analysis:
+    GEN:  - s : this event is class i fied as exfiltration . this event is class i fied as security event is class i fied as exploit _ attack .
+--- PROMPT: User: I feel sad today.
+Assistant:
+    GEN:  - - assist ant : i ' s : 1 = . this ?
+--- PROMPT: User: How are you?
+Assistant:
+    GEN:  - - assist ant : i ' s : 1 = . this ?
+--- PROMPT: Question: How do you detect and respond to phishing?
+Answer:
+    GEN:  - based triage . re comm en ded respon se : detection : detection : detection : j i log ic re gu se : en ded respon se : monit or det ect and analy si s for re comm en ded respon se
+{
+  "params": 19312128,
+  "best_test_ppl": 103.84
+}

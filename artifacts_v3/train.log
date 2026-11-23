@@ -1,0 +1,23 @@
+[1/7] Corpus: real telemetry + augmented free-text...
+      total=65673 by_source={'enron-spam': 3919, 'jpcert-phishurl': 2600, 'synthetic': 4162, 'ctu13': 1672, 'nsl-kdd': 4149, 'malicious-urls': 5171, 'synthetic-text': 22000, 'synthetic-augmented': 22000}
+      by_label={'benign': 12033, 'malware': 6981, 'phishing': 8452, 'intrusion_dos': 5534, 'exploit_injection': 5720, 'credential_attack': 5587, 'exfiltration': 5778, 'recon_scan': 5307, 'ransomware': 5082, 'command_control': 5199}
+[2/7] BPE tokenizer (24k subsample — tokenizer needs coverage, not volume)...
+      vocab=4000 X=(65673, 56) (487s)
+[3/7] Transformer v3 MLP-head d=160 L=3 ff=320 train=22100 class_w=[1. 1. 1. 1. 1. 1. 1. 1. 1. 1.]
+      params=1,296,652
+[4/7] Training...
+      {'epoch': 1, 'train_loss': 0.3766, 'train_acc': 0.9059, 'val_accuracy_ema': 0.9764, 'val_binary_ema': 0.9813} (1028s)
+      {'epoch': 2, 'train_loss': 0.1572, 'train_acc': 0.9707, 'val_accuracy_ema': 0.9746, 'val_binary_ema': 0.9813} (1601s)
+      {'epoch': 3, 'train_loss': 0.1255, 'train_acc': 0.9785, 'val_accuracy_ema': 0.9751, 'val_binary_ema': 0.9805} (2208s)
+      early stopping
+[5/7] Temperature calibration on validation...
+      T=0.70 ECE 0.0352 -> 0.0059
+[6/7] Official KDDTest+ (novel attacks)...
+      n=13375 acc=0.6456 binary=0.8959
+[7/7] Saving artifacts_v3...
+{
+  "val_accuracy": 0.9764,
+  "official": 0.6456,
+  "temperature": 0.7,
+  "params": 1296652
+}

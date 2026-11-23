@@ -1,0 +1,16 @@
+{
+  "raw": 14133,
+  "label_exploit_injection": 6555,
+  "label_exfiltration": 1532,
+  "label_credential_attack": 463,
+  "label_phishing": 711,
+  "label_recon_scan": 671,
+  "label_intrusion_dos": 324,
+  "label_command_control": 374,
+  "dropped_unmapped_or_defensive": 2550,
+  "label_malware": 584,
+  "label_ransomware": 90,
+  "dropped_duplicate": 266,
+  "dropped_short_or_empty": 13,
+  "refined_total": 11304
+}

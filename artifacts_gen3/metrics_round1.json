@@ -1,0 +1,24 @@
+{
+ "base": "artifacts_gen2 (fine-tuned, not from scratch)",
+ "params": 19312128,
+ "steps": 250,
+ "docs": 15450,
+ "tokens": 940499,
+ "world_perplexity_before": 409.92,
+ "world_perplexity_after": 42.35,
+ "sources": [
+  "mledoze/countries (250 countries)",
+  "Bowserinator periodic table (118 elements)",
+  "curated encyclopedia (62 topics)",
+  "self-teaching paraphrases of verified facts",
+  "logged trusted interactions",
+  "rehearsal: Gen2 cyber+instruction slice"
+ ],
+ "samples_after": {
+  "Q: What is the capital of France?\nA:": "q : what is the capital of fran ce ? a : analy si s : this event is class i fied as exfiltration .",
+  "Q: What is the capital of Japan?\nA:": "q : what is the capital of ja pa n ? a : analy si s : this event is class i fied as exfiltration .",
+  "Q: What is photosynthesis?\nA:": "q : what is pho to sy n th es is ? a : analy si s : this event is class i fied as exfiltration .",
+  "Q: What is phishing?\nA:": "q : what is phishing ? a : analy si s : this event is class i fied as exfiltration ."
+ },
+ "seconds": 747
+}

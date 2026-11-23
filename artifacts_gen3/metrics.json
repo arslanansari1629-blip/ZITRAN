@@ -1,0 +1,24 @@
+{
+ "base": "artifacts_gen3 (fine-tuned, not from scratch)",
+ "params": 19312128,
+ "steps": 300,
+ "docs": 15450,
+ "tokens": 940499,
+ "world_perplexity_before": 42.34,
+ "world_perplexity_after": 22.83,
+ "sources": [
+  "mledoze/countries (250 countries)",
+  "Bowserinator periodic table (118 elements)",
+  "curated encyclopedia (62 topics)",
+  "self-teaching paraphrases of verified facts",
+  "logged trusted interactions",
+  "rehearsal: Gen2 cyber+instruction slice"
+ ],
+ "samples_after": {
+  "Q: What is the capital of France?\nA:": "q : what is the capital of fran ce ? a : the capital of b be an is the capital of ch em ical sy m bo l .",
+  "Q: What is the capital of Japan?\nA:": "q : what is the capital of ja pa n ? a : the capital of b be an is the capital of b be an .",
+  "Q: What is photosynthesis?\nA:": "q : what is pho to sy n th es is ? a : the capital of b be an is the capital of ch em ical el ement .",
+  "Q: What is phishing?\nA:": "q : what is phishing ? a : the capital of b be an is the capital of n am i a , ."
+ },
+ "seconds": 681
+}

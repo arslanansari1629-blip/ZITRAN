@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ZITRAN — Cybersecurity AI Chat</title>
+<style>
+  * { box-sizing: border-box; margin: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+  body { background: #0b1220; color: #e6edf7; height: 100vh; display: flex; flex-direction: column; }
+  header { background: #111c33; padding: 14px 20px; display: flex; align-items: center; gap: 14px; border-bottom: 2px solid #1e3a5f; flex-wrap: wrap; }
+  header h1 { font-size: 20px; } header h1 span { color: #38bdf8; }
+  header .sub { color: #8fa3bf; font-size: 12px; }
+  select { background: #0b1220; color: #e6edf7; border: 1px solid #2b4a73; border-radius: 8px; padding: 7px; margin-left: auto; }
+  #stats { font-size: 12px; color: #8fa3bf; }
+  #chips { padding: 10px 20px; display: flex; gap: 8px; flex-wrap: wrap; background: #0d1628; }
+  .chip { background: #16263f; border: 1px solid #2b4a73; color: #bcd3ee; border-radius: 999px; padding: 6px 12px; font-size: 12px; cursor: pointer; }
+  .chip:hover { background: #1e3a5f; }
+  #chat { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+  .msg { max-width: 78%; padding: 12px 16px; border-radius: 14px; line-height: 1.5; white-space: pre-wrap; word-break: break-word; }
+  .user { align-self: flex-end; background: #2563eb; border-bottom-right-radius: 4px; }
+  .bot { align-self: flex-start; background: #16263f; border: 1px solid #243a5c; border-bottom-left-radius: 4px; }
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 999px; font-weight: 700; font-size: 12px; margin-bottom: 6px; }
+  .CRITICAL { background: #dc2626; } .HIGH { background: #ea580c; } .MEDIUM { background: #ca8a04; } .NONE { background: #16a34a; }
+  .bar { height: 8px; background: #0b1220; border-radius: 4px; overflow: hidden; margin: 8px 0; }
+  .bar > div { height: 100%; background: linear-gradient(90deg, #38bdf8, #2563eb); }
+  .meta { font-size: 12px; color: #8fa3bf; margin-top: 6px; }
+  .votes { font-size: 12px; margin-top: 8px; border-top: 1px solid #243a5c; padding-top: 8px; }
+  .votes b { color: #bcd3ee; }
+  footer { display: flex; gap: 10px; padding: 14px 20px; background: #111c33; border-top: 2px solid #1e3a5f; }
+  #input { flex: 1; padding: 12px; border-radius: 10px; border: 1px solid #2b4a73; background: #0b1220; color: #e6edf7; font-size: 15px; }
+  button#send { background: #2563eb; color: #fff; border: 0; border-radius: 10px; padding: 0 22px; font-size: 15px; cursor: pointer; }
+  button#send:disabled { opacity: .5; }
+  .typing { color: #8fa3bf; font-style: italic; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🛡️ <span>ZITRAN</span> Chat</h1>
+  <div class="sub">Defensive cybersecurity AI — paste a log, URL, email or incident description.<br>It classifies the threat, risk level &amp; response action. (Detection only — it won't generate attacks.)</div>
+  <select id="model"></select>
+  <div id="stats">checked: 0 · threats: 0</div>
+</header>
+<div id="chips"></div>
+<main id="chat"></main>
+<footer>
+  <input id="input" placeholder="e.g. ransom note pay bitcoin files encrypted locked shadow copies deleted" autocomplete="off">
+  <button id="send">Analyse</button>
+</footer>
+<script>
+let checked = 0, threats = 0;
+let sessionId = localStorage.getItem('zitran_session') || ('web-' + Math.random().toString(36).slice(2, 10));
+localStorage.setItem('zitran_session', sessionId);
+const chat = document.getElementById('chat'), input = document.getElementById('input'),
+      send = document.getElementById('send'), modelSel = document.getElementById('model');
+const examples = [
+  "ransom note pay bitcoin files encrypted locked shadow copies deleted",
+  "url https://secure-login-verify.top/account/update",
+  "someone tried thousands of passwords against vpn account of finance manager",
+  "network flow dur zero proto tcp svc http flag SF sbytes b6 dbytes b7",
+  "user alice logged in successfully via mfa dashboard",
+  "union select password dump sql injection login bypass attempt",
+  "periodic beaconing every 60s to evil-c2.xyz infected host command and control"
+];
+const chips = document.getElementById('chips');
+examples.forEach(e => { const c = document.createElement('button'); c.className = 'chip'; c.textContent = e.slice(0, 44) + '…';
+  c.onclick = () => { input.value = e; sendMsg(); }; chips.appendChild(c); });
+
+async function loadModels() {
+  try {
+    const r = await fetch('/api/models'); const d = await r.json();
+    d.models.forEach(m => { const o = document.createElement('option'); o.value = m.id;
+      o.textContent = m.name + (m.accuracy ? ` (${(m.accuracy*100).toFixed(1)}% val)` : ''); modelSel.appendChild(o); });
+  } catch (e) { modelSel.innerHTML = '<option value="ensemble">ensemble</option>'; }
+}
+function bubble(cls, html) { const d = document.createElement('div'); d.className = 'msg ' + cls; d.innerHTML = html; chat.appendChild(d); chat.scrollTop = chat.scrollHeight; return d; }
+function esc(s) { return s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+async function sendMsg() {
+  const text = input.value.trim(); if (!text) return;
+  bubble('user', esc(text)); input.value = ''; send.disabled = true;
+  const t = bubble('bot typing', 'ZITRAN is analysing…');
+  try {
+    const r = await fetch('/api/chat', { method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ message: text, model: modelSel.value, session_id: sessionId }) });
+    const d = await r.json(); t.remove();
+    if (d.error) { bubble('bot', '⚠️ ' + esc(d.error)); return; }
+    if (!d.predicted_class) {
+      const el = bubble('bot', ''); el.innerText = d.reply || '';
+      if (d.generated_url) { const a = document.createElement('a'); a.href = d.generated_url; a.target = '_blank';
+        a.textContent = '🌐 Open your generated page: ' + d.generated_url;
+        a.style.cssText = 'display:block;margin-top:8px;color:#38bdf8;font-weight:700'; el.appendChild(a); }
+      if (d.html_preview) { const det = document.createElement('details'); const sum = document.createElement('summary');
+        sum.textContent = 'View generated HTML code'; sum.style.cursor = 'pointer';
+        const pre = document.createElement('pre'); pre.style.cssText = 'overflow:auto;font-size:11px;max-height:220px';
+        pre.textContent = d.html_preview + '\n<!-- …preview truncated, open the page or file for full code -->'; det.appendChild(sum); det.appendChild(pre); el.appendChild(det); }
+      if (d.emotion) { const m = document.createElement('div'); m.className = 'meta';
+        m.textContent = `${d.emotion.emoji} I sense: ${d.emotion.emotion} (${(d.emotion.confidence*100).toFixed(0)}%)` + (d.session_mood ? ` · session mood: ${d.session_mood}` : '');
+        el.appendChild(m); }
+      if (d.reasoning && d.reasoning.steps) showReasoning(d.reasoning);
+      return;
+    }
+    checked++; if (d.is_threat) threats++;
+    document.getElementById('stats').textContent = `checked: ${checked} · threats: ${threats}`;
+    let html = `<span class="badge ${d.risk_level}">${d.risk_level} RISK</span> <b>${esc(d.predicted_class)}</b>` +
+      (d.emotion ? `<span class="meta"> ${d.emotion.emoji} your message reads as: ${esc(d.emotion.emotion)}</span>` : '') +
+      `<div class="bar"><div style="width:${(d.confidence*100).toFixed(1)}%"></div></div>` +
+      `confidence ${(d.confidence*100).toFixed(1)}% · threat probability ${((d.threat_probability ?? (d.is_threat?1:0))*100).toFixed(1)}%<br>` +
+      `${d.is_threat ? '🚨 <b>Threat detected.</b> ' : '✅ Looks benign. '}${esc(d.recommended_action)}` +
+      `<div class="meta">also considered: ${d.top3.map(x => esc(x.class) + ' ' + (x.prob*100).toFixed(0) + '%').join(' · ')}</div>`;
+    if (d.model_votes) html += `<div class="votes"><b>Model votes:</b> ` +
+      Object.entries(d.model_votes).map(([k, v]) => `${k}: ${esc(v.class)} (${(v.confidence*100).toFixed(0)}%)`).join(' · ') + `</div>`;
+    bubble('bot', html);
+    if (d.reasoning && d.reasoning.steps) showReasoning(d.reasoning);
+  } catch (e) { t.remove(); bubble('bot', '⚠️ Server error — is chat_server running?'); }
+  send.disabled = false; input.focus();
+}
+function showReasoning(rs) {
+  const det = document.createElement('details'); det.className = 'msg bot'; det.style.maxWidth = '78%';
+  const sum = document.createElement('summary'); sum.textContent = '🧠 Reasoning trail (click)'; sum.style.cursor = 'pointer';
+  det.appendChild(sum);
+  rs.steps.forEach(st => { const p = document.createElement('div'); p.className = 'meta';
+    p.innerHTML = '<b>' + esc(st.step) + ':</b> ' + esc(st.detail); det.appendChild(p); });
+  if (rs.scenario) { const p = document.createElement('div'); p.className = 'meta';
+    p.innerHTML = '<b>Closest known scenario:</b> ' + esc(rs.scenario.title) + ' · MITRE ' + esc(rs.scenario.mitre); det.appendChild(p); }
+  chat.appendChild(det); chat.scrollTop = chat.scrollHeight;
+}
+send.onclick = sendMsg;
+input.addEventListener('keydown', e => { if (e.key === 'Enter') sendMsg(); });
+bubble('bot', '👋 I am <b>ZITRAN</b>, your defensive cybersecurity assistant. I can <b>talk</b>: ask me questions, paste a security event for analysis with a step-by-step reasoning trail, then ask <b>why?</b> or <b>what should I do?</b> — I remember our conversation. Try: “my name is …”, “what is phishing?”, “what is 23*7+5?”, or an example chip above!');
+loadModels(); input.focus();
+</script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+{
+  "params": 19312128,
+  "tokens_trained_on": 614400,
+  "corpus_tokens": 2484707,
+  "best_test_perplexity": 103.84,
+  "history": [
+    {
+      "step": 150,
+      "loss": 4.7467,
+      "test_ppl": 148.16
+    },
+    {
+      "step": 300,
+      "loss": 4.7701,
+      "test_ppl": 103.94
+    },
+    {
+      "step": 320,
+      "loss": 4.5091,
+      "test_ppl": 103.84
+    }
+  ],
+  "samples_verbatim": [
+    {
+      "prompt": "Question: What is ransomware?\nAnswer:",
+      "generated": "question : what is ransomware ? answ er : - - act : re comm en ded respon se : in c id ent : security event is class i fied as exploit _ injection . 0 02 ."
+    },
+    {
+      "prompt": "Incident: mass file encryption files renamed locked ransom note bitcoin\nAnalysis:",
+      "generated": "in c id ent : mass file encryption files renamed locked ransom note bitcoin analy si s : - s : this event is class i fied as exfiltration . this event is class i fied as security event is class i fied as exploit _ attack ."
+    },
+    {
+      "prompt": "User: I feel sad today.\nAssistant:",
+      "generated": "user : i feel sa d today . assist ant : - - assist ant : i ' s : 1 = . this ?"
+    },
+    {
+      "prompt": "User: How are you?\nAssistant:",
+      "generated": "user : how are you ? assist ant : - - assist ant : i ' s : 1 = . this ?"
+    },
+    {
+      "prompt": "Question: How do you detect and respond to phishing?\nAnswer:",
+      "generated": "question : how do you det ect and respon d to phishing ? answ er : - based triage . re comm en ded respon se : detection : detection : detection : j i log ic re gu se : en ded respon se : monit or det ect and analy si s for re comm en ded respon se"
+    }
+  ],
+  "training_seconds": 1028.9,
+  "note": "step-budgeted CPU run; small specialist LM, not a frontier model",
+  "instruction_source": "Alpaca (GitHub fallback for OpenHermes)"
+}
