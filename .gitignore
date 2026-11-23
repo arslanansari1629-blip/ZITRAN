@@ -14,3 +14,5 @@ artifacts_gen4/*.pt
 artifacts_gen4/corpus_ids.npy
 artifacts_gen5/*.pt
 artifacts_gen5/corpus_ids.npy
+artifacts_gen6/*.pt
+artifacts_gen6/corpus_ids.npy

@@ -285,3 +285,18 @@ free CPU sandbox, regardless of code. The honest path at this scale is exactly
 what is built here: verified retrieval over ever-larger fact banks (264k now;
 Wikipedia/SQuAD/OpenHermes loaders slot in unchanged on an unrestricted machine)
 + a generative model that keeps improving each self-learning round.
+
+## 💬 ShareGPT_Vicuna_unfiltered + Gen6 (`artifacts_gen6/`)
+
+Requested dataset `anon8231489123/ShareGPT_Vicuna_unfiltered` (90k conversations)
+is attempted first via `load_dataset` (HuggingFace is unreachable from this
+sandbox), so training used the **GitHub mirror of the exact file that dataset is
+built from**: `ShareGPT_V3_unfiltered_cleaned_split` (94,145 conversations,
+673 MB JSON from a 105 MB .7z). Because the data is *unfiltered* real chat logs
+and ZITRAN is defensive, `zitran/sharegpt_data.py` safety-filters it (harmful
+intent blocklist, English/length/quality checks): **85,817 human→GPT pairs kept**
+(`data/sharegpt_docs.jsonl.gz`, 28 MB). Gen6 continual training (900 steps;
+50,464 docs; **6.48M tokens** — the largest corpus yet): world perplexity held
+75.9 → 75.5 while absorbing conversational data; generations show early
+conversational structure ("here is a list of…", list formatting) but remain
+incoherent at this scale. Tests: `tests/test_sharegpt.py`.

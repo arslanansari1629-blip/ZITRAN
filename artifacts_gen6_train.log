@@ -1,0 +1,66 @@
+[1/6] Building world + self-teaching + rehearsal corpora...
+'TLS/SSL connection has been closed (EOF) (_ssl.c:992)' thrown while requesting HEAD https://huggingface.co/datasets/teknium/OpenHermes-2.5/resolve/main/README.md
+Retrying in 1s [Retry 1/5].
+'TLS/SSL connection has been closed (EOF) (_ssl.c:992)' thrown while requesting HEAD https://huggingface.co/datasets/teknium/OpenHermes-2.5/resolve/main/README.md
+Retrying in 2s [Retry 2/5].
+'TLS/SSL connection has been closed (EOF) (_ssl.c:992)' thrown while requesting HEAD https://huggingface.co/datasets/teknium/OpenHermes-2.5/resolve/main/README.md
+Retrying in 4s [Retry 3/5].
+'TLS/SSL connection has been closed (EOF) (_ssl.c:992)' thrown while requesting HEAD https://huggingface.co/datasets/teknium/OpenHermes-2.5/resolve/main/README.md
+Retrying in 8s [Retry 4/5].
+'TLS/SSL connection has been closed (EOF) (_ssl.c:992)' thrown while requesting HEAD https://huggingface.co/datasets/teknium/OpenHermes-2.5/resolve/main/README.md
+Retrying in 8s [Retry 5/5].
+'TLS/SSL connection has been closed (EOF) (_ssl.c:992)' thrown while requesting HEAD https://huggingface.co/datasets/teknium/OpenHermes-2.5/resolve/main/README.md
+[instruction] OpenHermes via HF unavailable (ConnectionError); using GitHub-hosted Alpaca fallback
+'TLS/SSL connection has been closed (EOF) (_ssl.c:992)' thrown while requesting HEAD https://huggingface.co/datasets/anon8231489123/ShareGPT_Vicuna_unfiltered/resolve/main/README.md
+Retrying in 1s [Retry 1/5].
+'TLS/SSL connection has been closed (EOF) (_ssl.c:992)' thrown while requesting HEAD https://huggingface.co/datasets/anon8231489123/ShareGPT_Vicuna_unfiltered/resolve/main/README.md
+Retrying in 2s [Retry 2/5].
+'TLS/SSL connection has been closed (EOF) (_ssl.c:992)' thrown while requesting HEAD https://huggingface.co/datasets/anon8231489123/ShareGPT_Vicuna_unfiltered/resolve/main/README.md
+Retrying in 4s [Retry 3/5].
+'TLS/SSL connection has been closed (EOF) (_ssl.c:992)' thrown while requesting HEAD https://huggingface.co/datasets/anon8231489123/ShareGPT_Vicuna_unfiltered/resolve/main/README.md
+Retrying in 8s [Retry 4/5].
+'TLS/SSL connection has been closed (EOF) (_ssl.c:992)' thrown while requesting HEAD https://huggingface.co/datasets/anon8231489123/ShareGPT_Vicuna_unfiltered/resolve/main/README.md
+Retrying in 8s [Retry 5/5].
+'TLS/SSL connection has been closed (EOF) (_ssl.c:992)' thrown while requesting HEAD https://huggingface.co/datasets/anon8231489123/ShareGPT_Vicuna_unfiltered/resolve/main/README.md
+[sharegpt] HF unavailable (ConnectionError); using GitHub-mirror file
+      sharegpt=14000 (source: GitHub mirror of ShareGPT_V3_unfiltered_cleaned_split (85,817 filtered pairs))
+      world=20000 self_teaching=11464 rehearsal=5000 total_docs=50464 (instruction: Alpaca (GitHub fallback for OpenHermes))
+[2/6] Tokenizing (Gen2 BPE vocab)...
+      tokens=6.48M (57s)
+[3/6] Loaded artifacts_gen5 checkpoint (19,312,128 params). Measuring BEFORE...
+      world-knowledge perplexity BEFORE self-learning: 75.89
+[4/6] Self-learning fine-tune (900 steps x 24 x 80)...
+/home/user/ZITRAN/zitran/train_gen6.py:91: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  opt.step(); sched.step(); step += 1; losses.append(float(loss))
+      step 50 loss 4.945 (161s)
+      step 100 loss 4.774 (247s)
+      step 150 loss 4.721 (339s)
+      step 200 loss 4.671 (428s)
+      step 250 loss 4.588 (514s)
+      step 300 loss 4.544 (599s)
+      step 350 loss 4.521 (689s)
+      step 400 loss 4.480 (776s)
+      step 450 loss 4.463 (865s)
+      step 500 loss 4.444 (957s)
+      step 550 loss 4.397 (1041s)
+      step 600 loss 4.398 (1125s)
+      step 650 loss 4.384 (1208s)
+      step 700 loss 4.369 (1294s)
+      step 750 loss 4.368 (1381s)
+      step 800 loss 4.342 (1474s)
+      step 850 loss 4.342 (1569s)
+      step 900 loss 4.338 (1661s)
+[5/6] Measuring AFTER + generating samples...
+      world-knowledge perplexity AFTER self-learning: 75.50
+      FACT PROBE after training: 0/16 capitals generated correctly
+[6/6] Saved artifacts_gen6 {"world_perplexity_before": 75.89, "world_perplexity_after": 75.5, "steps": 900, "docs": 50464}
+PROMPT: Q: What is the capital of France? A: 
+  -> q : what is the capital of fran ce ? a : the capital of ma in o is the capital of b el em ical .
+PROMPT: Q: What is the capital of Japan? A: 
+  -> q : what is the capital of ja pa n ? a : the capital of ma in o is the capital of b el a , in is l ands .
+PROMPT: Q: What is photosynthesis? A: 
+  -> q : what is pho to sy n th es is ? a : the capital of ma in e a is k u a y .
+PROMPT: Q: What is phishing? A: 
+  -> q : what is phishing ? a : the capital of ma in ia is the capital of b el a , in is l ands .
+EXIT=0
